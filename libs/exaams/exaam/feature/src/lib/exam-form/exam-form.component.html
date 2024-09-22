@@ -1,0 +1,58 @@
+<div class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold mb-6">Create Exam</h2>
+  <form [formGroup]="examForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Exam Metadata -->
+    <div class="grid lg:grid-cols-2 w-full lg:gap-2 p-2 shadow-2xl">
+      <atomic-input formControlName="name" label="Name"></atomic-input>
+      <atomic-input formControlName="description" label="Description"></atomic-input>
+      <atomic-input formControlName="niveau" label="Niveau"></atomic-input>
+      <atomic-input formControlName="premium" label="Premium" [type]="'checkbox'"></atomic-input>
+    </div>
+
+    <!-- Reading Task -->
+    <div formArrayName="readingTasks" >
+      <h3 class="text-xl font-bold mb-2">Reading Tasks</h3>
+      <div class="grid lg:grid-cols-2 w-full lg:gap-2 p-2 shadow-2xl">
+        @for (task of readingTasks.controls; let i = $index; track task){
+          <div formGroupName="{{i}}"  class="grid grid-cols-1 w-full lg:gap-2 p-2 border-2">
+            <h3>Reading task {{i+1}}</h3>
+            <atomic-input formControlName="taskNumber" [label]="'Task Number'"></atomic-input>
+            <atomic-input formControlName="timeAllocationInMinutes" type="number" [label]="'Time Allocation In Minutes'"></atomic-input>
+            <atomic-input formControlName="instructions" type="textarea" [label]="'Instructions'"></atomic-input>
+            <atomic-input formControlName="mainText" type="textarea" [label]="'Main Text'"></atomic-input>
+            <atomic-input formControlName="taskType" [label]="'Task Type'"></atomic-input>
+            <div formArrayName="questions">
+              @for(question of getQuestionControls(i).controls; let j = $index; track question){
+                <div formGroupName="{{j}}" class="grid grid-cols-1 w-full lg:gap-2 p-2 border-2">
+                  <h3>Question {{j+1}}</h3>
+                  <atomic-input formControlName="questionNumber" [label]="'Question Number'"></atomic-input>
+                  <atomic-input formControlName="statement" [label]="'Statement'"></atomic-input>
+                  <atomic-input formControlName="answer" [label]="'Answer'"></atomic-input>
+                  <div formArrayName="choices">
+                    @for (choice of getChoiceControls(i,j).controls ;let k = $index; track choice) {
+                      <div formGroupName="{{k}}">
+                        <atomic-input formControlName="choice" [label]="'Choice'"></atomic-input>
+                      </div>
+                    }
+                    <atomic-button (click)="addChoice(i,j)">add choice</atomic-button>
+                  </div>
+                </div>
+              }
+              <atomic-button (click)="addQuestion(i)"> Add Question</atomic-button>
+            </div>
+          </div>
+        }
+      </div>
+      <atomic-button (click)="addReadingTask()">Add Reading Task</atomic-button>
+    </div>
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      (click)="submitForm()"
+      class="block w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+    >
+      Create Exam
+    </button>
+  </form>
+</div>

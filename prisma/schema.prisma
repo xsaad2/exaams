@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
+  name      String?
+  role      String?
+  exams     B1Exam[]
+}
+
+model B1Exam {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  modules     Module[]
+  creatorId   String
+  creator     User     @relation(fields: [creatorId], references: [id])
+}
+
+model Module {
+  id            Int     @id @default(autoincrement())
+  name          String // e.g., Reading, Listening, Writing, Speaking
+  description   String?
+  totalDuration Int // Total duration in minutes
+  maxScore      Int // Maximum possible score for this module
+  examId        Int
+  exam          B1Exam  @relation(fields: [examId], references: [id])
+  tasks         Task[] // Relation to the tasks in this module
+}
+
+model Task {
+  id             Int     @id @default(autoincrement())
+  description    String
+  taskType       String // e.g., Multiple Choice, True/False, Open Question, Hearing, etc.
+  numberOfItems  Int // Number of questions or items in the task
+  timeAllocation Int // Time allocated to this task in minutes
+  audioTrack     String? // Optional field for storing the URL or file path to the MP3 track (for hearing tasks)
+  moduleId       Int
+  module         Module  @relation(fields: [moduleId], references: [id])
+
+  Question Question[]
+}
+
+model Question {
+  id            Int      @id @default(autoincrement())
+  content       String // Question text or instruction
+  options       String[] // Possible answer options if applicable (for MCQs)
+  correctAnswer String // Correct answer for evaluation purposes
+  taskId        Int
+  task          Task     @relation(fields: [taskId], references: [id])
+}

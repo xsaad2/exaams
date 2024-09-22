@@ -1,0 +1,21 @@
+<nav class="w-full">
+  <div class="flex h-[50px] bg-cyan-400 justify-between">
+
+    <div class="flex px-3 space-x-3">
+        <atomic-icon class="self-center" iconName="menu" (click)="openDrawer()" [rotated]="!drawerIsOpen"></atomic-icon>
+        <span class="self-center">Logo</span>
+    </div>
+    @if(store.isLoggedIn()){
+      <div class="flex px-3 self-center">
+        <atomic-button (click)="onLogout()">Logout</atomic-button>
+        <div class="self-center">{{store.user()?.displayName}}</div>
+      </div>
+    } @else {
+      <div class="flex px-3 self-center">
+        <atomic-button (click)="onLogin()">Login</atomic-button >
+        <div class="self-center">{{store.user()?.displayName}}</div>
+      </div>
+    }
+
+  </div>
+</nav>

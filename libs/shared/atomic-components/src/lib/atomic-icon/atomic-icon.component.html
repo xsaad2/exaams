@@ -1,0 +1,21 @@
+<div >
+  <mat-icon
+  class="py-0.5 hover:cursor-pointer hover:bg-opacity-20 hover:bg-gray-200"
+  fontSet="material-symbols-outlined"
+  [class.fill-icon]="isFilled()"
+  [ngClass]="{
+  'rotate-90': rotated(),
+  'animate-spin': animation() === 'spin',
+  'animate-pulse': animation() === 'pulse',
+  'animate-ping': animation() === 'ping',
+  'animate-bounce': animation() === 'bounce',
+  }"
+  [ngStyle]="{
+  'font-size.px': $sizePixels(),
+  'height.px': $sizePixels(),
+  'width.px': $sizePixels()
+  }"
+>
+  {{iconName()}}
+</mat-icon>
+</div>

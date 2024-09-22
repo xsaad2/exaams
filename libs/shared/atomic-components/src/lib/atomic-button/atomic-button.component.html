@@ -1,0 +1,13 @@
+<button
+  [type]="type()"
+  class="bg-primary hover:bg-primary-light text-white font-bold py-2 px-4 rounded text-center"
+  [ngClass]="{
+   'animate-spin': animation() === 'spin',
+  'animate-pulse': animation() === 'pulse',
+  'animate-ping': animation() === 'ping',
+  'animate-bounce': animation() === 'bounce',
+
+  }">
+  <ng-content></ng-content>
+</button>
+

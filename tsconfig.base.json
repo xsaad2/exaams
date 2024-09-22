@@ -14,7 +14,34 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@com.language.exams/exaams-backend/authentication": [
+        "libs/exaams-backend/authentication/src/index.ts"
+      ],
+      "@com.language.exams/exaams-backend/exam/feature": [
+        "libs/exaams-backend/exam/feature/src/index.ts"
+      ],
+      "@com.language.exams/exaams-backend/utils": [
+        "libs/exaams-backend/utils/src/index.ts"
+      ],
+      "@com.language.exams/exaams/auth/data-access": [
+        "libs/exaams/auth/data-access/src/index.ts"
+      ],
+      "@com.language.exams/exaams/exaam/data-access": [
+        "libs/exaams/exaam/data-access/src/index.ts"
+      ],
+      "@com.language.exams/exaams/exam/feature": [
+        "libs/exaams/exaam/feature/src/index.ts"
+      ],
+      "@com.language.exams/exaams/main-layout": [
+        "libs/exaams/main-layout/src/index.ts"
+      ],
+      "@com.language.exams/exaams/utils": ["libs/exaams/utils/src/index.ts"],
+      "@com.language.exams/shared/atomic-components": [
+        "libs/shared/atomic-components/src/index.ts"
+      ],
+      "@com.language.exams/shared/utils": ["libs/shared/utils/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

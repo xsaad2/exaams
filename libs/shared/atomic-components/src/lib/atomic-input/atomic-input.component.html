@@ -1,0 +1,42 @@
+
+<div class="flex flex-col w-full">
+    <label
+      *ngIf="label()"
+      class="mb-2 text-sm font-medium text-gray-700"
+      [for]="label()"
+    >
+      {{ label() }}
+    </label>
+  @if(type() === 'textarea') {
+    <textarea
+      [placeholder]="placeholder()"
+      [value]="value"
+      (input)="handleInputChange($event)"
+      [disabled]="isDisabled"
+      class="block h-full w-full px-4 py-2 text-sm border rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500 dark:border-gray-600"
+      [ngClass]="{
+        'border-gray-300': !isInvalid,
+        'border-red-500': isInvalid,
+      }"
+    ></textarea>
+  } @else {
+    <input
+      [type]="type()"
+      [placeholder]="placeholder()"
+      [value]="value"
+      (input)="handleInputChange($event)"
+      [disabled]="isDisabled"
+      class="block h-full w-full px-4 py-2 text-sm border rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500 dark:border-gray-600"
+      [ngClass]="{
+        'border-gray-300': !isInvalid,
+        'border-red-500': isInvalid,
+      }"
+    />
+  }
+    <p
+      *ngIf="isInvalid() && errorMessage()"
+      class="mt-1 text-sm text-red-500 dark:text-red-400"
+    >
+      {{ errorMessage() }}
+    </p>
+  </div>

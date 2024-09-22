@@ -1,0 +1,31 @@
+model Task {
+  id             String     @id @default(uuid()) @db.Uuid
+  description    String
+  taskType       String // e.g., Multiple Choice, True/False, Open Question, Hearing, etc.
+  numberOfItems  Int // Number of questions or items in the task
+  timeAllocation Int // Time allocated to this task in minutes
+  moduleId       String     @db.Uuid
+  module         Module     @relation(fields: [moduleId], references: [id])
+  mainText       String?
+  Question       Question[]
+}
+
+model Question {
+  id            String   @id @default(uuid()) @db.Uuid
+  content       String // Question text or instruction
+  options       String[] // Possible answer options if applicable (for MCQs)
+  correctAnswer String // Correct answer for evaluation purposes
+  taskId        String   @db.Uuid
+  task          Task     @relation(fields: [taskId], references: [id])
+}
+
+model Module {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String // e.g., Reading, Listening, Writing, Speaking
+  description   String?
+  totalDuration Int // Total duration in minutes
+  maxScore      Int // Maximum possible score for this module
+  examId        String  @db.Uuid
+  tasks         Task[] // Relation to the tasks in this module
+  exam          Exam    @relation(fields: [examId], references: [id])
+}
