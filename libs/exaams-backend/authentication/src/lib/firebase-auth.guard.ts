@@ -1,4 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
 import * as admin from 'firebase-admin';
 
 @Injectable()
@@ -22,7 +23,7 @@ export class AuthGuard implements CanActivate {
     }
   }
 
-  private extractTokenFromHeader(request): string | null {
+  private extractTokenFromHeader(request: Request): string | null {
     const authorization = request.headers['authorization'];
     if (!authorization) return null;
 
