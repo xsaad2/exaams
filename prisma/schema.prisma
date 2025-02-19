@@ -14,54 +14,100 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  email     String    @unique
   name      String?
   role      String?
-  exams     B1Exam[]
+  b1exams   B1Exam[]
 }
 
 model B1Exam {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  modules     Module[]
-  creatorId   String
-  creator     User     @relation(fields: [creatorId], references: [id])
+  id              String      @id @default(cuid())
+  name            String      @unique
+  createdAt       DateTime    @default(now())
+  deletedAt       DateTime?
+  creatorId       String
+  creator         User?       @relation(fields: [creatorId], references: [id])
+  readingTask1Id  Int         @unique
+  readingTask1    ReadingTask @relation("ReadingTask1", fields: [readingTask1Id], references: [id])
+  readingTask2aId Int         @unique
+  readingTask2a   ReadingTask @relation("ReadingTask2a", fields: [readingTask2aId], references: [id])
+  readingTask2bId Int         @unique
+  readingTask2b   ReadingTask @relation("ReadingTask2b", fields: [readingTask2bId], references: [id])
+  readingTask3Id  Int         @unique
+  readingTask3    ReadingTask @relation("ReadingTask3", fields: [readingTask3Id], references: [id])
+  readingTask4Id  Int         @unique
+  readingTask4    ReadingTask @relation("ReadingTask4", fields: [readingTask4Id], references: [id])
+  readingTask5Id  Int         @unique
+  readingTask5    ReadingTask @relation("ReadingTask5", fields: [readingTask5Id], references: [id])
+  hearingTask1Id  Int         @unique
+  hearingTask1    HearingTask @relation("HearingTask1", fields: [hearingTask1Id], references: [id])
+  hearingTask2Id  Int         @unique
+  hearingTask2    HearingTask @relation("HearingTask2", fields: [hearingTask2Id], references: [id])
+  hearingTask3Id  Int         @unique
+  hearingTask3    HearingTask @relation("HearingTask3", fields: [hearingTask3Id], references: [id])
+  hearingTask4Id  Int         @unique
+  hearingTask4    HearingTask @relation("HearingTask4", fields: [hearingTask4Id], references: [id])
+  audioTrack      Audio?
+  audioTrackUrl   String?
 }
 
-model Module {
-  id            Int     @id @default(autoincrement())
-  name          String // e.g., Reading, Listening, Writing, Speaking
-  description   String?
-  totalDuration Int // Total duration in minutes
-  maxScore      Int // Maximum possible score for this module
-  examId        Int
-  exam          B1Exam  @relation(fields: [examId], references: [id])
-  tasks         Task[] // Relation to the tasks in this module
+model ReadingTask {
+  id                Int        @id @default(autoincrement())
+  taskNumber        String // teil 1, teil 2a, teil 2b, etc.
+  instructions      String
+  textTitle         String?
+  textContents      String?    @db.Text
+  workTimeInMinutes Int?
+  imagesContents    Image?
+  questions         Question[]
+  examReadingTask1  B1Exam?    @relation("ReadingTask1")
+  examReadingTask2a B1Exam?    @relation("ReadingTask2a")
+  examReadingTask2b B1Exam?    @relation("ReadingTask2b")
+  examReadingTask3  B1Exam?    @relation("ReadingTask3")
+  examReadingTask4  B1Exam?    @relation("ReadingTask4")
+  examReadingTask5  B1Exam?    @relation("ReadingTask5")
 }
 
-model Task {
-  id             Int     @id @default(autoincrement())
-  description    String
-  taskType       String // e.g., Multiple Choice, True/False, Open Question, Hearing, etc.
-  numberOfItems  Int // Number of questions or items in the task
-  timeAllocation Int // Time allocated to this task in minutes
-  audioTrack     String? // Optional field for storing the URL or file path to the MP3 track (for hearing tasks)
-  moduleId       Int
-  module         Module  @relation(fields: [moduleId], references: [id])
-
-  Question Question[]
+model HearingTask {
+  id               Int        @id @default(autoincrement())
+  taskNumber       String // teil 1, teil 2, teil 3, etc.
+  instructions     String
+  audioContext     String?
+  questions        Question[]
+  examHearingTask1 B1Exam?    @relation("HearingTask1")
+  examHearingTask2 B1Exam?    @relation("HearingTask2")
+  examHearingTask3 B1Exam?    @relation("HearingTask3")
+  examHearingTask4 B1Exam?    @relation("HearingTask4")
 }
 
 model Question {
-  id            Int      @id @default(autoincrement())
-  content       String // Question text or instruction
-  options       String[] // Possible answer options if applicable (for MCQs)
-  correctAnswer String // Correct answer for evaluation purposes
-  taskId        Int
-  task          Task     @relation(fields: [taskId], references: [id])
+  id             String       @id @default(cuid())
+  questionNumber Int // e.g., 1, 2, 3, 4, 5, etc.
+  statement      String
+  questionText   String?
+  options        String[]
+  correctAnswer  String
+  readingTaskId  Int?
+  readingTask    ReadingTask? @relation(fields: [readingTaskId], references: [id])
+  hearingTaskId  Int?
+  hearingTask    HearingTask? @relation(fields: [hearingTaskId], references: [id])
+}
+
+model Image {
+  id            String       @id @default(cuid())
+  name          String?
+  imageData     Bytes
+  readingTaskId Int          @unique
+  readingTask   ReadingTask? @relation(fields: [readingTaskId], references: [id])
+}
+
+model Audio {
+  id        String  @id @default(cuid())
+  name      String?
+  audioData Bytes
+  examId    String  @unique
+  exam      B1Exam? @relation(fields: [examId], references: [id])
 }
