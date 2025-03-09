@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ExaamController } from './exaam.contoller';
-import { ExaamService } from './exaam.service';
+import { B1ExaamService } from './b1-exaam.service';
 import { PrismaService } from '@com.language.exams/exaams-backend/utils';
 
 @Module({
   controllers: [ExaamController],
-  providers: [ExaamService, PrismaService],
+  providers: [B1ExaamService, PrismaService],
   imports: [],
   exports: [],
 })
-export class ExaamsBackendExamModule {}
+export class ExaamsBackendExamModule { }

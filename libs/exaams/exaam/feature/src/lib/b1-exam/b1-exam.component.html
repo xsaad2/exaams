@@ -1,0 +1,95 @@
+@if (exam) {
+  <div class="flex flex-col justify-center p-5 py-10 bg-white gap-5 h-full">
+    <form [formGroup]="answersForm">
+      <h2
+        class="text-4xl text-center border-2 border-gray-500 rounded-md p-10 mb-10 max-w-[1024px]">{{ exam.name }}</h2>
+
+      <section formGroupName="readingTask1" class="pb-10 max-w-[1024px]" id="lesenTeil1">
+        <lib-b1-exam-task-content [readingTask]="exam.readingTask1"></lib-b1-exam-task-content>
+
+        <!--questions-->
+        <div>
+          @for (question of exam.readingTask1.questions; track question.id; let i = $index) {
+            @if (question.questionNumber === 0) {
+              <lib-task-example-container>
+                <p><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
+                <p class="font-bold lg:mr-24">{{ question.correctAnswer }}</p>
+              </lib-task-example-container>
+            } @else {
+              <div class="flex flex-row justify-between mt-5 lg:gap-96">
+                <p class="mb-5"><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
+                <select [formControlName]="i">
+                  <option>--Option auswählen--</option>
+                  @for (option of question.options; track option) {
+                    <option value="{{option}}">{{ option }}</option>
+                  }
+                </select>
+
+              </div>
+            }
+          }
+        </div>
+      </section>
+
+      <section id="lesenTeil2a" formGroupName="readingTask2a" class="pb-10 max-w-[1024px]">
+        <lib-b1-exam-task-content [readingTask]="exam.readingTask2a"></lib-b1-exam-task-content>
+        <!--questions-->
+        @for (question of exam.readingTask2a.questions; track question.id; let i = $index) {
+          @if (question.questionNumber === 0) {
+            <lib-task-example-container>
+              <p><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
+              <div class="flex flex-col">
+                @for (option of question.options; track option; let j = $index) {
+
+                  @if (option === question.correctAnswer) {
+                    <atomic-input [isDisabled]="true" [checked]="true" type="checkbox">
+                      <p *ngIf="j === 0"><b> a. </b></p>
+                      <p *ngIf="j === 1"><b> b. </b></p>
+                      <p *ngIf="j === 2"><b> c. </b></p>
+                      {{ option }}</atomic-input>
+                  } @else {
+                    <atomic-input [isDisabled]="true" type="checkbox">
+                      <p *ngIf="j === 0"><b> a. </b></p>
+                      <p *ngIf="j === 1"><b> b. </b></p>
+                      <p *ngIf="j === 2"><b> c. </b></p>
+                      {{ option }}</atomic-input>
+                  }
+                }
+              </div>
+            </lib-task-example-container>
+          } @else {
+            <div class="flex flex-col gap-5 mt-5">
+              <div class="grid grid-cols-2 lg:gap-x-48">
+                <div class="flex flex-row">
+                  <p><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
+                </div>
+                <div class="flex flex-col justify-start">
+                  @for (option of question.options; track option; let j = $index) {
+
+                    <atomic-input id="{{j + '' + question.questionNumber}}"
+                                  (change)="onCheckboxChange(option, question.questionNumber)"
+                                  [formControlName]="question.questionNumber"
+                                  type="checkbox"
+                                  [checkBoxValue]="option">
+                      <p *ngIf="j === 0"><b> a. </b></p>
+                      <p *ngIf="j === 1"><b> b. </b></p>
+                      <p *ngIf="j === 2"><b> c. </b></p>
+                      {{  option }}
+                    </atomic-input>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-row justify-between mt-5 lg:gap-96">
+
+            </div>
+          }
+        }
+      </section>
+
+      <section id="submit">
+        <atomic-button (click)="submitAnswers()">Submit</atomic-button>
+      </section>
+    </form>
+  </div>
+}

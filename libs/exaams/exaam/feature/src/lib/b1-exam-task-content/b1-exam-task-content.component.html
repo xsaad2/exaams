@@ -1,0 +1,15 @@
+<div class="flex flex-row gap-9">
+  <p class="font-bold">{{ taskNumber }}: </p>
+  <p>Arbeitszeit {{ readingTask()?.workTimeInMinutes }} Minutes</p>
+</div>
+
+<div class="mt-5">
+  <p [innerHTML]="instructionsLine1"></p>
+  <p [innerHTML]="instructionsLine2"></p>
+</div>
+
+<div class="flex flex-col align-middle mt-5 border-2 border-black rounded-md">
+  <p class="text-center text-2xl font-bold italic mt-2">{{ readingTask()?.textTitle }}</p>
+  <p class="text-balance p-10 whitespace-pre-line" [innerHTML]="readingTask()?.textContents"></p>
+</div>
+

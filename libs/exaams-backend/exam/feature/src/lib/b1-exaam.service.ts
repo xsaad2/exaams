@@ -1,6 +1,6 @@
-import { PrismaService, ReadingTaskFiles } from 'libs/exaams-backend/utils/src';
+import { PrismaService, ReadingTaskFiles } from '@com.language.exams/exaams-backend/utils';
 import { Injectable } from '@nestjs/common';
-import { B1Exam, Image } from '@prisma/client';
+import { B1Exam } from '@prisma/client';
 import { Express } from 'express';
 
 // This is a hack to make Multer available in the Express namespace
@@ -9,7 +9,7 @@ import { Client } from 'minio';
 type File = Express.Multer.File;
 
 @Injectable()
-export class ExaamService {
+export class B1ExaamService {
   private minioClient = new Client({
     endPoint: process.env.MINIO_ENDPOINT,
     port: 9000,
@@ -21,7 +21,7 @@ export class ExaamService {
   constructor(private prismaService: PrismaService) {
   }
 
-  async createExaam(exaam: any, files: ReadingTaskFiles) {
+  async createB1Exaam(exaam: any, files: ReadingTaskFiles) {
     try {
 
       const {
@@ -128,16 +128,56 @@ export class ExaamService {
     const res: B1Exam[] = await this.prismaService.b1Exam.findMany({
       include: {
         creator: true,
-        readingTask1: true,
-        readingTask2a: true,
-        readingTask2b: true,
-        readingTask3: true,
-        readingTask4: true,
-        readingTask5: true,
-        hearingTask1: true,
-        hearingTask2: true,
-        hearingTask3: true,
-        hearingTask4: true
+        readingTask1: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask2a: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask2b: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask3: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask4: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask5: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask1: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask2: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask3: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask4: {
+          include: {
+            questions: true
+          }
+        }
       }
     });
     return await Promise.all(

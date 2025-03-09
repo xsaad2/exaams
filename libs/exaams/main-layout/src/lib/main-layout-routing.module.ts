@@ -17,7 +17,7 @@ const routes: Routes = [
       {
         path: 'exam',
         loadChildren: () => import('@com.language.exams/exaams/exam/feature').then(c => c.ExamModule)
-      }
+      },
     ],
   },
 ];
