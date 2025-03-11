@@ -17,6 +17,7 @@ export type ReadingTaskFiles = {
 export type B1ExamWithTasks = {
   id: string,
   name: string,
+  readingTask3ImageUrls?: string;
   readingTask1: ReadingTask;
   readingTask2a: ReadingTask;
   readingTask2b: ReadingTask;
@@ -37,7 +38,7 @@ export type ReadingTask = {
   textContents: string;
   workTimeInMinutes: number;
   questions: Question[];
-  image: Image;
+  imagesContents: Image;
 }
 
 export type Question = {
@@ -52,5 +53,5 @@ export type Question = {
 export type Image = {
   id: string;
   name: string;
-  imageData: string;
+  imageData: ArrayBuffer;
 }

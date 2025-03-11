@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject, input, ViewChild} from '@angular/core';
+import {Component, ElementRef, inject, input, signal, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {B1Exam} from '@prisma/client';
 import {B1ExamService} from "@com.language.exams/exaams/exaam/data-access";
@@ -32,20 +32,41 @@ export class B1ExamComponent {
 
     this.answersForm = this.fb.group({
       readingTask1: this.fb.group({
-        1: ['--Option auswählen--', Validators.required],
-        2: ['--Option auswählen--', Validators.required],
-        3: ['--Option auswählen--', Validators.required],
-        4: ['--Option auswählen--', Validators.required],
-        5: ['--Option auswählen--', Validators.required],
-        6: ['--Option auswählen--', Validators.required],
+        1: ['', Validators.required],
+        2: ['', Validators.required],
+        3: ['', Validators.required],
+        4: ['', Validators.required],
+        5: ['', Validators.required],
+        6: ['', Validators.required],
       }),
       readingTask2a: this.fb.group({
         7: ['', Validators.required],
         8: ['', Validators.required],
         9: ['', Validators.required],
+      }),
+      readingTask2b: this.fb.group({
+        10: ['', Validators.required],
+        11: ['', Validators.required],
+        12: ['', Validators.required],
+      }),
+      readingTask3: this.fb.group({
+        13: ['', Validators.required],
+        14: ['', Validators.required],
+        15: ['', Validators.required],
+        16: ['', Validators.required],
+        17: ['', Validators.required],
+        18: ['', Validators.required],
+        19: ['', Validators.required],
       })
     })
 
+    const readingTask3Control = this.answersForm.get('readingTask3');
+    if (readingTask3Control) {
+      readingTask3Control.valueChanges.subscribe(value => {
+        this.chosenOptions.set(Object.values(value).filter(val => val !== '') as string[]);
+      });
+
+    }
   }
 
   @ViewChild('checkbox') checkbox!: ElementRef<HTMLInputElement>;
@@ -54,15 +75,28 @@ export class B1ExamComponent {
     for (let i = 0; i < 3; i++) {
       const id = i + '' + questionNumber
       const checkbox = document.getElementById(id) as HTMLInputElement;
-      console.log(checkbox.value)
       if (checkbox.value !== selectedOption) {
         checkbox.checked = false;
       }
     }
   }
 
+  protected chosenOptions = signal<string[]>([])
+  // optionChange(event: Event, option: string) {
+  //   console.log(option)
+  //   this.chosenOptions.some(e => e === option) ?
+  //     this.chosenOptions = this.chosenOptions.filter(e => e !== option) :
+  //     this.chosenOptions.push(option)
+  // }
+
+  protected optionNotChosen(option: string) {
+    return !this.chosenOptions().some(e => e === option)
+  }
+
+
   submitAnswers(){
     console.log(this.answersForm.value)
   }
+
 
 }

@@ -18,13 +18,24 @@ export class B1ExamTaskContentComponent {
 
   get instructionsLine1() {
     return this.readingTask()?.instructions?.split('. ')[0]
-      .replace(/\d+/g, '<b>$&</b>')
+      .replace(/\b([A-J])\b/gi, '<b>$1</b>')
+      .replace(/\d+/g, '<b>$&</b>')+ '.'
   }
 
   get instructionsLine2() {
     return this.readingTask()?.instructions?.split('. ')[1]
-      .replace(/\b([a-c])\b/g, '<b>$1</b>')
-      .replace(/\b(Falsch|Richtig)\b/g, '<b>$1</b>');
+        .replace(/\b([a-c])\b/gi, '<b>$1</b>')
+        .replace(/\b(Falsch|Richtig)\b/g, '<b>$1</b>')
+      + (this.instructionsLine3? '. ' + this.instructionsLine3 : '')
   }
+
+  get instructionsLine3() {
+    return this.readingTask()?.instructions?.split('. ')
+      .slice(2)
+      .join('. ')
+      .replace(/\d+/g, '<b>$&</b>')
+  }
+
+
 
 }
