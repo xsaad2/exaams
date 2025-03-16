@@ -69,6 +69,12 @@ export class B1ExamComponent {
         24: ['', Validators.required],
         25: ['', Validators.required],
         26: ['', Validators.required],
+      }),
+      readingTask5: this.fb.group({
+        27: ['', Validators.required],
+        28: ['', Validators.required],
+        29: ['', Validators.required],
+        30: ['', Validators.required],
       })
     })
 

@@ -243,6 +243,46 @@
         </div>
       </section>
 
+      <section id="lesenTeil5" class="max-w-[1024px] pb-10" formGroupName="readingTask5">
+        <lib-b1-exam-task-content [readingTask]="exam.readingTask5"></lib-b1-exam-task-content>
+        <div class="grid md:grid-cols-2 mt-10 lg:pl-5">
+          @for (question of exam.readingTask5.questions; track question.id; let i = $index) {
+
+              <div class="rows-2 mt-4">
+                <div class="">
+                  <p class="font-bold mb-2"><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
+                </div>
+                <div class="flex flex-col justify-start">
+                  @for (option of question.options; track option; let j = $index) {
+
+                    <atomic-input id="{{j + '' + question.questionNumber}}"
+                                  (change)="onCheckboxChange(option, question.questionNumber)"
+                                  [formControlName]="question.questionNumber"
+                                  type="checkbox"
+                                  [checkBoxValue]="option">
+                      @switch (j) {
+                        @case (0) {
+                          <p><b> a. </b></p>
+                        }
+                        @case (1) {
+                          <p><b> b. </b></p>
+                        }
+                        @case (2) {
+                          <p><b> c. </b></p>
+                        }
+                      }
+                      {{ option }}
+                    </atomic-input>
+                  }
+                </div>
+              </div>
+
+
+
+          }
+        </div>
+      </section>
+
       <section id="submit">
         <atomic-button (click)="submitAnswers()">Schicken</atomic-button>
       </section>
