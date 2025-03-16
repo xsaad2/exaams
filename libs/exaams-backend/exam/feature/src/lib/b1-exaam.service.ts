@@ -87,7 +87,6 @@ export class B1ExaamService {
   }
 
   createReadingTask(readingTask: any, file: File | null | undefined) {
-    console.log('file[0].originalname', file?.[0]?.originalname)
     return {
       create: {
         taskNumber: readingTask.taskNumber,
@@ -100,7 +99,8 @@ export class B1ExaamService {
             questionNumber: q.questionNumber,
             statement: q.statement,
             options: q.options,
-            correctAnswer: q.correctAnswer
+            correctAnswer: q.correctAnswer,
+            questionText: q.questionText
           }))
         },
         imagesContents: file ? {

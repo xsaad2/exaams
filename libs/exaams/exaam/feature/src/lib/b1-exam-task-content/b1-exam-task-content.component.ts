@@ -23,10 +23,17 @@ export class B1ExamTaskContentComponent {
   }
 
   get instructionsLine2() {
-    return this.readingTask()?.instructions?.split('. ')[1]
+
+    const inst1 =  this.readingTask()?.instructions?.split('. ')[1]
         .replace(/\b([a-c])\b/gi, '<b>$1</b>')
         .replace(/\b(Falsch|Richtig)\b/g, '<b>$1</b>')
       + (this.instructionsLine3? '. ' + this.instructionsLine3 : '')
+
+    const inst2 = inst1.split('. ')[0]
+      .replace(/:(.*)/, ':<b>$1</b>');
+
+    return this.readingTask()?.taskNumber === 'teil 4' ? inst2 :  inst1;
+
   }
 
   get instructionsLine3() {

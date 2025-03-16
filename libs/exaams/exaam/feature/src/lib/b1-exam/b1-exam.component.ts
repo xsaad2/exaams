@@ -7,11 +7,12 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {AtomicButtonComponent, AtomicInputComponent} from "@com.language.exams/shared/atomic-components";
 import {B1ExamTaskContentComponent} from "../b1-exam-task-content/b1-exam-task-content.component";
 import {TaskExampleContainerComponent} from "../task-example-container/task-example-container.component";
+import {YesNoComponent} from "../yes-no/yes-no.component";
 
 @Component({
   selector: 'lib-b1-exam',
   standalone: true,
-  imports: [CommonModule, AtomicButtonComponent, ReactiveFormsModule, B1ExamTaskContentComponent, TaskExampleContainerComponent, AtomicInputComponent],
+  imports: [CommonModule, AtomicButtonComponent, ReactiveFormsModule, B1ExamTaskContentComponent, TaskExampleContainerComponent, AtomicInputComponent, YesNoComponent],
   templateUrl: './b1-exam.component.html',
 })
 export class B1ExamComponent {
@@ -19,6 +20,8 @@ export class B1ExamComponent {
   protected b1Exam = input<B1Exam | null>()
   protected exam!: B1ExamWithTasks;
   protected answersForm!: FormGroup;
+  protected chosenOptions = signal<string[]>([])
+
 
   private readonly fb = inject(FormBuilder);
 
@@ -57,16 +60,29 @@ export class B1ExamComponent {
         17: ['', Validators.required],
         18: ['', Validators.required],
         19: ['', Validators.required],
+      }),
+      readingTask4: this.fb.group({
+        20: ['', Validators.required],
+        21: ['', Validators.required],
+        22: ['', Validators.required],
+        23: ['', Validators.required],
+        24: ['', Validators.required],
+        25: ['', Validators.required],
+        26: ['', Validators.required],
       })
     })
 
     const readingTask3Control = this.answersForm.get('readingTask3');
     if (readingTask3Control) {
       readingTask3Control.valueChanges.subscribe(value => {
-        this.chosenOptions.set(Object.values(value).filter(val => val !== '') as string[]);
+        this.chosenOptions.set(Object.values(value).filter(val => (val !== '' && val != '0')) as string[]);
       });
 
     }
+  }
+
+  get readingTask4FormGroup(){
+    return this.answersForm.get('readingTask4') as FormGroup;
   }
 
   @ViewChild('checkbox') checkbox!: ElementRef<HTMLInputElement>;
@@ -80,19 +96,6 @@ export class B1ExamComponent {
       }
     }
   }
-
-  protected chosenOptions = signal<string[]>([])
-  // optionChange(event: Event, option: string) {
-  //   console.log(option)
-  //   this.chosenOptions.some(e => e === option) ?
-  //     this.chosenOptions = this.chosenOptions.filter(e => e !== option) :
-  //     this.chosenOptions.push(option)
-  // }
-
-  protected optionNotChosen(option: string) {
-    return !this.chosenOptions().some(e => e === option)
-  }
-
 
   submitAnswers(){
     console.log(this.answersForm.value)

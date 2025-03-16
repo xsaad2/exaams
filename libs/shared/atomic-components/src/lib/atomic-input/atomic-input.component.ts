@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-import { Component, input, effect } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -38,13 +38,6 @@ export class AtomicInputComponent implements ControlValueAccessor {
   };
   onTouched: () => void = () => {
   };
-  constructor() {
-    // effect(() => {
-    //   this.value = this.checkBoxValue();
-    // })
-  }
-
-
 
   writeValue(value: string): void {
     this.value = value;
