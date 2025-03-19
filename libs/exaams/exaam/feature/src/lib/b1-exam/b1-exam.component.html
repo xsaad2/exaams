@@ -1,15 +1,19 @@
-@if (exam) {
+@if (exam() !== null) {
   <div class="flex flex-col justify-center p-5 py-10 bg-white gap-5 h-full">
     <form [formGroup]="answersForm">
       <h2
-        class="text-4xl text-center border-2 border-gray-500 rounded-md p-10 mb-10 max-w-[1024px]">{{ exam.name }}</h2>
+        class="text-4xl text-center border-2 bg-primary-light border-gray-500 rounded-md p-10 mb-10 max-w-[1024px]">{{ exam()?.name }}</h2>
+
+      <p
+        class="w-full bg-gray-200 rounded-sm my-5 p-7 border-black border-2 text-center text-2xl md:text-4xl font-semibold">
+        Lesen</p>
+
 
       <section formGroupName="readingTask1" class="pb-10 max-w-[1024px]" id="lesenTeil1">
-        <lib-b1-exam-task-content [readingTask]="exam.readingTask1"></lib-b1-exam-task-content>
-
+        <lib-b1-exam-task-content [readingTask]="exam()?.readingTask1"></lib-b1-exam-task-content>
         <!--questions-->
         <div>
-          @for (question of exam.readingTask1.questions; track question.id; let i = $index) {
+          @for (question of exam()?.readingTask1?.questions; track question.id; let i = $index) {
             @if (question.questionNumber === 0) {
               <lib-task-example-container>
                 <div class="flex flex-row justify-between mt-5 lg:gap-96">
@@ -35,9 +39,9 @@
       </section>
 
       <section id="lesenTeil2a" formGroupName="readingTask2a" class="pb-10 max-w-[1024px]">
-        <lib-b1-exam-task-content [readingTask]="exam.readingTask2a"></lib-b1-exam-task-content>
+        <lib-b1-exam-task-content [readingTask]="exam()?.readingTask2a"></lib-b1-exam-task-content>
         <!--questions-->
-        @for (question of exam.readingTask2a.questions; track question.id; let i = $index) {
+        @for (question of exam()?.readingTask2a?.questions; track question.id; let i = $index) {
           @if (question.questionNumber === 0) {
             <lib-task-example-container>
 
@@ -72,10 +76,10 @@
                   <p><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
                 </div>
                 <div class="flex flex-col justify-start">
-                  @for (option of question.options; track option; let j = $index) {
+                  @for (option of question.options; track option; let j = $index; let k = $count) {
 
-                    <atomic-input id="{{j + '' + question.questionNumber}}"
-                                  (change)="onCheckboxChange(option, question.questionNumber)"
+                    <atomic-input id="{{'reafingTask2a' + question.questionNumber + j}}"
+                                  (change)="onCheckboxChange(option, question.questionNumber, 'reafingTask2a')"
                                   [formControlName]="question.questionNumber"
                                   type="checkbox"
                                   [checkBoxValue]="option">
@@ -93,9 +97,9 @@
       </section>
 
       <section id="lesenTeil2b" formGroupName="readingTask2b" class="pb-10 max-w-[1024px]">
-        <lib-b1-exam-task-content [readingTask]="exam.readingTask2b"></lib-b1-exam-task-content>
+        <lib-b1-exam-task-content [readingTask]="exam()?.readingTask2b"></lib-b1-exam-task-content>
         <!--questions-->
-        @for (question of exam.readingTask2b.questions; track question.id; let i = $index) {
+        @for (question of exam()?.readingTask2b?.questions; track question.id; let i = $index) {
           @if (question.questionNumber === 0) {
             <lib-task-example-container>
               <p><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
@@ -138,10 +142,10 @@
                   <p><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
                 </div>
                 <div class="flex flex-col justify-start">
-                  @for (option of question.options; track option; let j = $index) {
+                  @for (option of question.options; track option; let j = $index; let k = $count) {
 
-                    <atomic-input id="{{j + '' + question.questionNumber}}"
-                                  (change)="onCheckboxChange(option, question.questionNumber)"
+                    <atomic-input id="{{'readingTask2b' + question.questionNumber + j}}"
+                                  (change)="onCheckboxChange(option, question.questionNumber, 'readingTask2b')"
                                   [formControlName]="question.questionNumber"
                                   type="checkbox"
                                   [checkBoxValue]="option">
@@ -167,10 +171,10 @@
       </section>
 
       <section id="lesenTeil3" formGroupName="readingTask3" class="pb-10 max-w-[1024px]">
-        <lib-b1-exam-task-content [readingTask]="exam.readingTask3"></lib-b1-exam-task-content>
-        <p class="italic my-4 font-semibold">{{ exam.readingTask3.textContents }}</p>
+        <lib-b1-exam-task-content [readingTask]="exam()?.readingTask3"></lib-b1-exam-task-content>
+        <p class="italic my-4 font-semibold">{{ exam()?.readingTask3?.textContents }}</p>
 
-        @for (question of exam.readingTask3.questions; track question.id; let i = $index) {
+        @for (question of exam()?.readingTask3?.questions; track question.id; let i = $index) {
           @if (question.questionNumber === 0) {
             <lib-task-example-container>
               <p><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
@@ -194,16 +198,16 @@
           }
         }
         <div class="flex justify-center w-full mt-5">
-          <img [src]="exam.readingTask3ImageUrls" alt="Anzeige Bilder Fuer Teil 3">
+          <img [src]="exam()?.readingTask3ImageUrls" alt="Anzeige Bilder Fuer Teil 3">
         </div>
       </section>
 
       <section id="lesenTeil4" formGroupName="readingTask4" class="pb-10 max-w-[1024px]">
-        <lib-b1-exam-task-content [readingTask]="exam.readingTask4"></lib-b1-exam-task-content>
+        <lib-b1-exam-task-content [readingTask]="exam()?.readingTask4"></lib-b1-exam-task-content>
 
-        <p class="italic my-4 font-semibold">{{ exam.readingTask4.textContents }}</p>
+        <p class="italic my-4 font-semibold">{{ exam()?.readingTask4?.textContents }}</p>
 
-        @for (question of exam.readingTask4.questions; track question.id; let i = $index) {
+        @for (question of exam()?.readingTask4?.questions; track question.id; let i = $index) {
           @if (question.questionNumber === 0) {
             <div class="max-w-[420px] max-h-[350px] mb-4">
               <lib-task-example-container class="">
@@ -215,8 +219,8 @@
             </div>
           }
         }
-        <div  class="columns-1 md:columns-2 gap-5 w-full">
-          @for (question of exam.readingTask4.questions; track question.id; let i = $index) {
+        <div class="columns-1 md:columns-2 gap-5 w-full">
+          @for (question of exam()?.readingTask4?.questions; track question.id; let i = $index) {
             @if (question.questionNumber !== 0) {
               <div class="flex flex-row justify-between max-w-[420px] mb-4">
                 <p><b>{{ question.questionNumber }}.</b> {{ question.questionText }}</p>
@@ -227,14 +231,14 @@
         </div>
         <p class="italic my-4 font-semibold">Leserkommentare</p>
         <div class="flex flex-col gap-5">
-          @for (question of exam.readingTask4.questions; track question.id; let i = $index) {
-            @if (question.questionNumber ===0){
+          @for (question of exam()?.readingTask4?.questions; track question.id; let i = $index) {
+            @if (question.questionNumber === 0) {
               <lib-task-example-container>
                 <div class="flex flex-row justify-between">
                   <p><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
                 </div>
               </lib-task-example-container>
-            } @else{
+            } @else {
               <div class="flex flex-row justify-between">
                 <p><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
               </div>
@@ -244,43 +248,152 @@
       </section>
 
       <section id="lesenTeil5" class="max-w-[1024px] pb-10" formGroupName="readingTask5">
-        <lib-b1-exam-task-content [readingTask]="exam.readingTask5"></lib-b1-exam-task-content>
+        <lib-b1-exam-task-content [readingTask]="exam()?.readingTask5"></lib-b1-exam-task-content>
         <div class="grid md:grid-cols-2 mt-10 lg:pl-5">
-          @for (question of exam.readingTask5.questions; track question.id; let i = $index) {
+          @for (question of exam()?.readingTask5?.questions; track question.id; let i = $index) {
+            <div class="rows-2 mt-4">
+              <div class="">
+                <p class="font-bold mb-2"><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
+              </div>
+              <div class="flex flex-col justify-start">
+                @for (option of question.options; track option; let j = $index; let k = $count) {
 
-              <div class="rows-2 mt-4">
+                  <atomic-input id="{{'readingTask5' + question.questionNumber + j}}"
+                                (change)="onCheckboxChange(option, question.questionNumber, 'readingTask5')"
+                                [formControlName]="question.questionNumber"
+                                type="checkbox"
+                                [checkBoxValue]="option">
+                    @switch (j) {
+                      @case (0) {
+                        <p><b> a. </b></p>
+                      }
+                      @case (1) {
+                        <p><b> b. </b></p>
+                      }
+                      @case (2) {
+                        <p><b> c. </b></p>
+                      }
+                    }
+                    {{ option }}
+                  </atomic-input>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <h1
+        class="w-full bg-gray-200 rounded-sm p-7 border-black border-2 text-center text-2xl md:text-4xl font-semibold">
+        Hören
+      </h1>
+
+      <section id="horenTeil1" formGroupName="hearingTask1" class="max-w-[1024px] pb-10 mt-5">
+        <lib-b1-exam-task-content [hearingTask]="exam()?.hearingTask1"></lib-b1-exam-task-content>
+        @for (element of hearingTask1Elements(); track element; let i = $index) {
+          @if (i === 0) {
+            <lib-task-example-container>
+              <div class="rows-2 mt-4 md:grid grid-cols-2">
+                <p class="font-bold mb-4">01. {{ element.first.statement }}</p>
+                <lib-binary-question [chosenOption]="element.first.correctAnswer" [isDisabled]="true"
+                                     [btnsLabels]="element.first.options"></lib-binary-question>
+              </div>
+              <div class="rows-2 mt-4 md:grid grid-cols-2">
                 <div class="">
-                  <p class="font-bold mb-2"><b>{{ question.questionNumber }}.</b> {{ question.statement }}</p>
+                  <p class="font-bold mb-2">02. {{ element.second.statement }}
+                  </p>
                 </div>
                 <div class="flex flex-col justify-start">
-                  @for (option of question.options; track option; let j = $index) {
-
-                    <atomic-input id="{{j + '' + question.questionNumber}}"
-                                  (change)="onCheckboxChange(option, question.questionNumber)"
-                                  [formControlName]="question.questionNumber"
-                                  type="checkbox"
-                                  [checkBoxValue]="option">
-                      @switch (j) {
-                        @case (0) {
-                          <p><b> a. </b></p>
-                        }
-                        @case (1) {
-                          <p><b> b. </b></p>
-                        }
-                        @case (2) {
-                          <p><b> c. </b></p>
-                        }
-                      }
-                      {{ option }}
-                    </atomic-input>
+                  @for (option of element.second.options; track option; let j = $index) {
+                    @if (option === element.second.correctAnswer) {
+                      <atomic-input [isDisabled]="true" [checked]="true" type="checkbox">
+                        <p *ngIf="j === 0"><b> a. </b></p>
+                        <p *ngIf="j === 1"><b> b. </b></p>
+                        <p *ngIf="j === 2"><b> c. </b></p>
+                        {{ option }}
+                      </atomic-input>
+                    } @else {
+                      <atomic-input [isDisabled]="true" type="checkbox">
+                        <p *ngIf="j === 0"><b> a. </b></p>
+                        <p *ngIf="j === 1"><b> b. </b></p>
+                        <p *ngIf="j === 2"><b> c. </b></p>
+                        {{ option }}
+                      </atomic-input>
+                    }
                   }
                 </div>
               </div>
-
-
-
+            </lib-task-example-container>
+          } @else {
+            <p class="mt-10 text-primary font-bold text-pretty">Text {{ i }}</p>
+            <div class="rows-2 my-4 md:grid grid-cols-2">
+              <p class="font-bold mb-4">{{ element.first.questionNumber }}. {{ element.first.statement }}</p>
+              <lib-binary-question [formControlName]="element.first.questionNumber"
+                                   [btnsLabels]="element.first.options"></lib-binary-question>
+            </div>
+            <div class="rows-2 mt-4 md:grid grid-cols-2">
+              <div class="">
+                <p class="font-bold mb-2">{{ element.second?.questionNumber }}. {{ element.second?.statement }}
+                </p>
+              </div>
+              <div class="flex flex-col justify-start">
+                @for (option of element.second?.options; track option; let j = $index;) {
+                  <atomic-input id="{{'hearinTask1' + element.second.questionNumber + j}}"
+                                (change)="onCheckboxChange(option, element.second.questionNumber, 'hearinTask1' )"
+                                [formControlName]="element.second.questionNumber"
+                                type="checkbox"
+                                [checkBoxValue]="option">
+                    @switch (j) {
+                      @case (0) {
+                        <p><b> a. </b></p>
+                      }
+                      @case (1) {
+                        <p><b> b. </b></p>
+                      }
+                      @case (2) {
+                        <p><b> c. </b></p>
+                      }
+                    }
+                    {{ option }}
+                  </atomic-input>
+                }
+              </div>
+            </div>
           }
-        </div>
+        }
+      </section>
+
+      <section id="hearingTask2" formGroupName="hearingTask2" class="max-w-[1024px] pb-10 mt-5">
+        <lib-b1-exam-task-content [hearingTask]="exam()?.hearingTask2"></lib-b1-exam-task-content>
+        @for (question of exam()?.hearingTask2?.questions; track question.id) {
+          <div class="rows-2 md:grid md:grid-cols-2 my-10">
+            <div class="">
+              <p class="font-bold mb-2">{{ question.questionNumber }}. {{ question.statement }}</p>
+            </div>
+            <div class="flex flex-col justify-start ">
+              @for (option of question.options; track option; let j = $index) {
+                <atomic-input id="{{ 'hearingTask2' + question.questionNumber + j}}"
+                              (change)="onCheckboxChange(option, question.questionNumber, 'hearingTask2')"
+                              [formControlName]="question.questionNumber"
+                              type="checkbox"
+                              [checkBoxValue]="option">
+                  @switch (j) {
+                    @case (0) {
+                      <p><b> a. </b></p>
+                    }
+                    @case (1) {
+                      <p><b> b. </b></p>
+                    }
+                    @case (2) {
+                      <p><b> c. </b></p>
+                    }
+                  }
+                  {{ option }}
+                </atomic-input>
+              }
+            </div>
+          </div>
+        }
       </section>
 
       <section id="submit">

@@ -24,10 +24,10 @@ export type B1ExamWithTasks = {
   readingTask3: ReadingTask;
   readingTask4: ReadingTask;
   readingTask5: ReadingTask;
-  hearingTask1: ReadingTask;
-  hearingTask2: ReadingTask;
-  hearingTask3: ReadingTask;
-  hearingTask4: ReadingTask;
+  hearingTask1: HearingTask;
+  hearingTask2: HearingTask;
+  hearingTask3: HearingTask;
+  hearingTask4: HearingTask;
 }
 
 export type ReadingTask = {
@@ -41,12 +41,21 @@ export type ReadingTask = {
   imagesContents: Image;
 }
 
+export type HearingTask = {
+  id: string;
+  taskNumber: string;
+  instructions: string;
+  audioContext: string;
+  workTimeInMinutes: number;
+  questions: Question[];
+}
+
 export type Question = {
   id: string;
   questionNumber: number;
   statement: string;
   questionText?: string;
-  options: string;
+  options: string[];
   correctAnswer: string;
 }
 
