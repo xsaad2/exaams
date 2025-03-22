@@ -1,1 +1,1 @@
-export * from './lib/exaams-exaam-data-access/exaams-exaam-data-access.component';
+export * from './lib/services/b1-exam.service';

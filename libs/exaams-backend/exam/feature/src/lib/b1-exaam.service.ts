@@ -1,15 +1,16 @@
-import { PrismaService, ReadingTaskFiles } from 'libs/exaams-backend/utils/src';
-import { Injectable } from '@nestjs/common';
-import { B1Exam, Image } from '@prisma/client';
-import { Express } from 'express';
+import {PrismaService, ReadingTaskFiles} from '@com.language.exams/exaams-backend/utils';
+import {Injectable, InternalServerErrorException} from '@nestjs/common';
+import {B1Exam} from '@prisma/client';
+import {Express} from 'express';
 
 // This is a hack to make Multer available in the Express namespace
-import { Client } from 'minio';
+import {Client} from 'minio';
+import {InternalCoreModule} from "@nestjs/core/injector/internal-core-module";
 
 type File = Express.Multer.File;
 
 @Injectable()
-export class ExaamService {
+export class B1ExaamService {
   private minioClient = new Client({
     endPoint: process.env.MINIO_ENDPOINT,
     port: 9000,
@@ -21,9 +22,14 @@ export class ExaamService {
   constructor(private prismaService: PrismaService) {
   }
 
-  async createExaam(exaam: any, files: ReadingTaskFiles) {
+  async createB1Exaam(exaam: any, files: ReadingTaskFiles) {
     try {
-
+      if (!files || !files.audioTrack || !files.audioTrack[0]) {
+        throw new InternalServerErrorException('Audio track file is missing')
+      }
+      if (!files || !files.readingTask3Image || !files.readingTask3Image[0]) {
+        throw new InternalServerErrorException('readingTask3Image file is missing');
+      }
       const {
         name,
         createdAt,
@@ -43,6 +49,7 @@ export class ExaamService {
 
       // Upload audio file
       await this.minioClient.putObject(process.env.MINIO_AUDIO_BUCKET, `${name}-audioTrack`, files.audioTrack[0].buffer);
+      await this.minioClient.putObject(process.env.MINIO_IMAGES_BUCKET, `${name}-readingTask3Image`, files.readingTask3Image[0].buffer);
 
       return this.prismaService.b1Exam.create({
         data: {
@@ -73,9 +80,9 @@ export class ExaamService {
           hearingTask4: this.createHearingTask(hearingTask4)
         }
       });
-    } catch (e) {
-      console.error(e);
-      throw new Error('Error while creating Exam', { cause: e });
+    } catch (e){
+      console.error('Error while creating Exam', e);
+      throw new InternalServerErrorException('Error while creating Exam', { cause: e });
     }
   }
 
@@ -92,7 +99,8 @@ export class ExaamService {
             questionNumber: q.questionNumber,
             statement: q.statement,
             options: q.options,
-            correctAnswer: q.correctAnswer
+            correctAnswer: q.correctAnswer,
+            questionText: q.questionText
           }))
         },
         imagesContents: file ? {
@@ -125,24 +133,67 @@ export class ExaamService {
   }
 
   async getAllExaams() {
-    const res: B1Exam[] = await this.prismaService.b1Exam.findMany({
+    const res = await this.prismaService.b1Exam.findMany({
       include: {
         creator: true,
-        readingTask1: true,
-        readingTask2a: true,
-        readingTask2b: true,
-        readingTask3: true,
-        readingTask4: true,
-        readingTask5: true,
-        hearingTask1: true,
-        hearingTask2: true,
-        hearingTask3: true,
-        hearingTask4: true
+        readingTask1: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask2a: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask2b: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask3: {
+          include: {
+            questions: true,
+            imagesContents: true
+
+          }
+        },
+        readingTask4: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask5: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask1: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask2: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask3: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask4: {
+          include: {
+            questions: true
+          }
+        }
       }
     });
     return await Promise.all(
       res.map(async (e) => {
         e.audioTrackUrl = await this.minioClient.presignedUrl('GET', process.env.MINIO_AUDIO_BUCKET, `${e.name}-audioTrack`);
+        e.readingTask3ImageUrls = await this.minioClient.presignedUrl('GET', process.env.MINIO_IMAGES_BUCKET, `${e.name}-readingTask3Image`);
         return e;
       })
     );
@@ -167,7 +218,7 @@ export class ExaamService {
         hearingTask4: true
       }
     });
-    const  presignedUrl = await this.minioClient.presignedUrl('GET', process.env.MINIO_AUDIO_BUCKET, `${exam.name}-audioTrack`);
+    const presignedUrl = await this.minioClient.presignedUrl('GET', process.env.MINIO_AUDIO_BUCKET, `${exam.name}-audioTrack`);
     return {
       ...exam,
       audioTrackUrl: presignedUrl

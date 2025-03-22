@@ -1,5 +1,14 @@
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { ExaamService } from './exaam.service';
+import {
+  Body,
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Param,
+  Post,
+  UploadedFiles,
+  UseInterceptors
+} from '@nestjs/common';
+import { B1ExaamService } from './b1-exaam.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 
@@ -10,37 +19,27 @@ type File = Express.Multer.File;
 
 @Controller('exaams')
 export class ExaamController {
-  constructor(private readonly serviceNameService: ExaamService) {
+  constructor(private readonly serviceNameService: B1ExaamService) {
   }
-
 
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([
-      // { name: 'readingTask1Image', maxCount: 1 },
-      // { name: 'readingTask2aImage', maxCount: 1 },
-      // { name: 'readingTask2bImage', maxCount: 1 },
+      { name: 'audioTrack', maxCount: 1 },
       { name: 'readingTask3Image', maxCount: 1 },
-      // { name: 'readingTask4Image', maxCount: 1 },
-      // { name: 'readingTask5Image', maxCount: 1 },
-      { name: 'audioTrack', maxCount: 1 }
-    ])
+    ]) as any
   )
   async createExam(
     @Body('data') examData: any,
-    @UploadedFiles() files: ReadingTaskFiles
+    @UploadedFiles() files: { [key: string]: File[] }
   ) {
     try {
-      if (!files || !files.audioTrack || !files.audioTrack[0]) {
-        console.log('Audio track file is missing');
-      }
-
       const exaam = JSON.parse(examData);
-      const res =  await this.serviceNameService.createExaam(exaam, files);
+      const res = await this.serviceNameService.createB1Exaam(exaam, files);
       console.log('res', res);
       return res;
     } catch (e) {
-      throw new Error('Error while creating Exam', {cause: e});
+      throw new InternalServerErrorException('Error while creating Exam', { cause: e });
     }
   }
 
@@ -50,6 +49,7 @@ export class ExaamController {
     try {
       return await this.serviceNameService.getAllExaams();
     } catch (e) {
+      console.error('Error while getting Exaams', e);
       return e;
     }
   }

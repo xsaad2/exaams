@@ -1,31 +1,84 @@
-
 <div class="flex flex-col w-full">
-    <label
-      *ngIf="label()"
-      class="mb-2 text-sm font-medium text-gray-700"
-      [for]="label()"
-    >
-      {{ label() }}
-    </label>
-  @if(type() === 'textarea') {
+  <label
+    *ngIf="label()"
+    class="mb-2 text-sm font-medium text-gray-700"
+    [for]="label()"
+  >
+    {{ label() }}
+  </label>
+  @if (type() === 'textarea') {
     <textarea
       [placeholder]="placeholder()"
       [value]="value"
       (input)="handleInputChange($event)"
-      [disabled]="isDisabled"
+      [disabled]="isDisabled()"
       class="block h-full w-full px-4 py-2 text-sm border rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500 dark:border-gray-600"
       [ngClass]="{
         'border-gray-300': !isInvalid,
         'border-red-500': isInvalid,
       }"
     ></textarea>
+  }
+  @if (type() === 'checkbox') {
+    <style>
+      input[type="checkbox"] {
+        /* Hide the default checkbox */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        /* Create a custom checkbox */
+        display: inline-block;
+        width: 1.5rem;
+        height: 20px;
+        background-color: #fff;
+        border: 2px solid #d1d5db;
+        border-radius: 0.25rem;
+        position: relative;
+      }
+
+      input[type="checkbox"]:checked {
+        background-color: #ffffff; /* Tailwind's blue-500 */
+        border-color: #3b82f6; /* Tailwind's blue-500 */
+      }
+
+      input[type="checkbox"]:disabled {
+        background-color: #c4c3c3; /* Tailwind's blue-500 */
+        border-color: #000000; /* Tailwind's blue-500 */
+        }
+
+      input[type="checkbox"]:checked::after {
+        content: '✗';
+        color: #000000;
+        font-size: 25px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+    <div class="flex flex-row gap-1">
+      <input
+        [id]="id()"
+        [checked]="checked()"
+        [type]="type()"
+        [value]="checkBoxValue()"
+        (change)="handleInputChange($event)"
+        [disabled]="isDisabled()"
+        class="block text-sm border rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500 dark:border-gray-600"
+        [ngClass]="{
+        'border-gray-300': !isInvalid,
+        'border-red-500': isInvalid,
+      }"
+      >
+      <ng-content></ng-content>
+    </div>
   } @else {
     <input
       [type]="type()"
       [placeholder]="placeholder()"
       [value]="value"
       (input)="handleInputChange($event)"
-      [disabled]="isDisabled"
+      [disabled]="isDisabled()"
       class="block h-full w-full px-4 py-2 text-sm border rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500 dark:border-gray-600"
       [ngClass]="{
         'border-gray-300': !isInvalid,
@@ -33,10 +86,10 @@
       }"
     />
   }
-    <p
-      *ngIf="isInvalid() && errorMessage()"
-      class="mt-1 text-sm text-red-500 dark:text-red-400"
-    >
-      {{ errorMessage() }}
-    </p>
-  </div>
+  <p
+    *ngIf="isInvalid() && errorMessage()"
+    class="mt-1 text-sm text-red-500 dark:text-red-400"
+  >
+    {{ errorMessage() }}
+  </p>
+</div>
