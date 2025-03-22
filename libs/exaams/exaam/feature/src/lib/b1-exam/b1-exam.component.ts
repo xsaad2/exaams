@@ -4,7 +4,11 @@ import {B1Exam} from '@prisma/client';
 import {B1ExamService} from "@com.language.exams/exaams/exaam/data-access";
 import {B1ExamWithTasks, Question} from "@com.language.exams/exaams-backend/utils";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {AtomicButtonComponent, AtomicInputComponent} from "@com.language.exams/shared/atomic-components";
+import {
+  AtomicButtonComponent,
+  AtomicCheckboxChoiceComponent,
+  AtomicInputComponent
+} from "@com.language.exams/shared/atomic-components";
 import {B1ExamTaskContentComponent} from "../b1-exam-task-content/b1-exam-task-content.component";
 import {TaskExampleContainerComponent} from "../task-example-container/task-example-container.component";
 import {YesNoComponent} from "../yes-no/yes-no.component";
@@ -18,7 +22,7 @@ export type HearingTask1Element = {
 @Component({
   selector: 'lib-b1-exam',
   standalone: true,
-  imports: [CommonModule, AtomicButtonComponent, ReactiveFormsModule, B1ExamTaskContentComponent, TaskExampleContainerComponent, AtomicInputComponent, YesNoComponent, BinaryQuestionComponent],
+  imports: [CommonModule, AtomicButtonComponent, ReactiveFormsModule, B1ExamTaskContentComponent, TaskExampleContainerComponent, AtomicInputComponent, YesNoComponent, BinaryQuestionComponent, AtomicCheckboxChoiceComponent],
   templateUrl: './b1-exam.component.html',
 })
 export class B1ExamComponent {
@@ -100,6 +104,25 @@ export class B1ExamComponent {
         13: ['', Validators.required],
         14: ['', Validators.required],
         15: ['', Validators.required],
+      }),
+      hearingTask3: this.fb.group({
+        16: ['', Validators.required],
+        17: ['', Validators.required],
+        18: ['', Validators.required],
+        19: ['', Validators.required],
+        20: ['', Validators.required],
+        21: ['', Validators.required],
+        22: ['', Validators.required],
+      }),
+      hearingTask4: this.fb.group({
+        23: ['', Validators.required],
+        24: ['', Validators.required],
+        25: ['', Validators.required],
+        26: ['', Validators.required],
+        27: ['', Validators.required],
+        28: ['', Validators.required],
+        29: ['', Validators.required],
+        30: ['', Validators.required],
       })
     })
 

@@ -1,15 +1,15 @@
 @if (exam() !== null) {
-  <div class="flex flex-col justify-center p-5 py-10 bg-white gap-5 h-full">
+  <div class="flex flex-col justify-center p-5 py-10 bg-white gap-5 h-full max-w-[1024px] mx-auto">
     <form [formGroup]="answersForm">
       <h2
-        class="text-4xl text-center border-2 bg-primary-light border-gray-500 rounded-md p-10 mb-10 max-w-[1024px]">{{ exam()?.name }}</h2>
+        class="text-4xl text-center border-2 bg-primary-light border-gray-500 rounded-md p-10 mb-10 ">{{ exam()?.name }}</h2>
 
       <p
         class="w-full bg-gray-200 rounded-sm my-5 p-7 border-black border-2 text-center text-2xl md:text-4xl font-semibold">
         Lesen</p>
 
 
-      <section formGroupName="readingTask1" class="pb-10 max-w-[1024px]" id="lesenTeil1">
+      <section formGroupName="readingTask1" class="pb-10   border-b-2 pt-4" id="lesenTeil1">
         <lib-b1-exam-task-content [readingTask]="exam()?.readingTask1"></lib-b1-exam-task-content>
         <!--questions-->
         <div>
@@ -38,7 +38,7 @@
         </div>
       </section>
 
-      <section id="lesenTeil2a" formGroupName="readingTask2a" class="pb-10 max-w-[1024px]">
+      <section id="lesenTeil2a" formGroupName="readingTask2a" class="pb-10   border-b-2 pt-4">
         <lib-b1-exam-task-content [readingTask]="exam()?.readingTask2a"></lib-b1-exam-task-content>
         <!--questions-->
         @for (question of exam()?.readingTask2a?.questions; track question.id; let i = $index) {
@@ -96,7 +96,7 @@
         }
       </section>
 
-      <section id="lesenTeil2b" formGroupName="readingTask2b" class="pb-10 max-w-[1024px]">
+      <section id="lesenTeil2b" formGroupName="readingTask2b" class="pb-10    border-b-2 pt-4">
         <lib-b1-exam-task-content [readingTask]="exam()?.readingTask2b"></lib-b1-exam-task-content>
         <!--questions-->
         @for (question of exam()?.readingTask2b?.questions; track question.id; let i = $index) {
@@ -170,7 +170,7 @@
         }
       </section>
 
-      <section id="lesenTeil3" formGroupName="readingTask3" class="pb-10 max-w-[1024px]">
+      <section id="lesenTeil3" formGroupName="readingTask3" class="pb-10    border-b-2 pt-4">
         <lib-b1-exam-task-content [readingTask]="exam()?.readingTask3"></lib-b1-exam-task-content>
         <p class="italic my-4 font-semibold">{{ exam()?.readingTask3?.textContents }}</p>
 
@@ -202,7 +202,7 @@
         </div>
       </section>
 
-      <section id="lesenTeil4" formGroupName="readingTask4" class="pb-10 max-w-[1024px]">
+      <section id="lesenTeil4" formGroupName="readingTask4" class="pb-10    border-b-2 pt-4">
         <lib-b1-exam-task-content [readingTask]="exam()?.readingTask4"></lib-b1-exam-task-content>
 
         <p class="italic my-4 font-semibold">{{ exam()?.readingTask4?.textContents }}</p>
@@ -247,7 +247,7 @@
         </div>
       </section>
 
-      <section id="lesenTeil5" class="max-w-[1024px] pb-10" formGroupName="readingTask5">
+      <section id="lesenTeil5" class="   border-b-2 pt-4 pb-10" formGroupName="readingTask5">
         <lib-b1-exam-task-content [readingTask]="exam()?.readingTask5"></lib-b1-exam-task-content>
         <div class="grid md:grid-cols-2 mt-10 lg:pl-5">
           @for (question of exam()?.readingTask5?.questions; track question.id; let i = $index) {
@@ -288,7 +288,7 @@
         Hören
       </h1>
 
-      <section id="horenTeil1" formGroupName="hearingTask1" class="max-w-[1024px] pb-10 mt-5">
+      <section id="horenTeil1" formGroupName="hearingTask1" class="   border-b-2 pt-4 pb-10 mt-5">
         <lib-b1-exam-task-content [hearingTask]="exam()?.hearingTask1"></lib-b1-exam-task-content>
         @for (element of hearingTask1Elements(); track element; let i = $index) {
           @if (i === 0) {
@@ -333,11 +333,11 @@
             </div>
             <div class="rows-2 mt-4 md:grid grid-cols-2">
               <div class="">
-                <p class="font-bold mb-2">{{ element.second?.questionNumber }}. {{ element.second?.statement }}
+                <p class="font-bold mb-2">{{ element.second.questionNumber }}. {{ element.second.statement }}
                 </p>
               </div>
               <div class="flex flex-col justify-start">
-                @for (option of element.second?.options; track option; let j = $index;) {
+                @for (option of element.second.options; track option; let j = $index; ) {
                   <atomic-input id="{{'hearinTask1' + element.second.questionNumber + j}}"
                                 (change)="onCheckboxChange(option, element.second.questionNumber, 'hearinTask1' )"
                                 [formControlName]="element.second.questionNumber"
@@ -363,12 +363,12 @@
         }
       </section>
 
-      <section id="hearingTask2" formGroupName="hearingTask2" class="max-w-[1024px] pb-10 mt-5">
+      <section id="hearingTask2" formGroupName="hearingTask2" class="   border-b-2 pt-4 pb-10 mt-5">
         <lib-b1-exam-task-content [hearingTask]="exam()?.hearingTask2"></lib-b1-exam-task-content>
         @for (question of exam()?.hearingTask2?.questions; track question.id) {
           <div class="rows-2 md:grid md:grid-cols-2 my-10">
-            <div class="">
-              <p class="font-bold mb-2">{{ question.questionNumber }}. {{ question.statement }}</p>
+            <div class="flex flex-row mb-2">
+              <p class="font-bold mr-1">{{ question.questionNumber }}. </p> {{ question.statement }}
             </div>
             <div class="flex flex-col justify-start ">
               @for (option of question.options; track option; let j = $index) {
@@ -396,7 +396,48 @@
         }
       </section>
 
-      <section id="submit">
+      <section id="hearingTask3" formGroupName="hearingTask3" class="pt-4 pb-10 mt-5">
+        <lib-b1-exam-task-content [hearingTask]="exam()?.hearingTask3"></lib-b1-exam-task-content>
+        @for (question of exam()?.hearingTask3?.questions; track question.id) {
+          <div class="rows-2 w-full my-4 md:grid grid-cols-3 md:gap-10 mt-8">
+            <div class="flex flex-row mb-2 col-span-2">
+              <p class="font-bold mr-1">{{ question.questionNumber }}. </p> {{ question.statement }}
+            </div>
+            <lib-binary-question [formControlName]="question.questionNumber"
+                                 [btnsLabels]="question.options"></lib-binary-question>
+          </div>
+        }
+      </section>
+
+      <section id="hearingTask4" formGroupName="hearingTask4" class="pt-4 pb-10 mt-5">
+        <lib-b1-exam-task-content [hearingTask]="exam()?.hearingTask4"></lib-b1-exam-task-content>
+        @for (question of exam()?.hearingTask4?.questions; track question.id) {
+          @if (question.questionNumber === 0) {
+            <lib-task-example-container>
+              <div class="md:rows-2 mt-8">
+                <div class="flex flex-col md:flex-row justify-between mb-2 col-span-2">
+
+                  <p><b>{{ question.questionNumber }}.</b> {{ question.statement }} </p>
+                    <atomic-checkbox-choice [isDisabled]="true"
+                                          [question]="question"
+                                          [useAlphabetLabels]="true"></atomic-checkbox-choice>
+                </div>
+              </div>
+            </lib-task-example-container>
+          } @else {
+            <div class="rows-2 w-full my-4 md:grid grid-cols-3 md:gap-10 mt-8">
+              <div class="flex flex-row mb-2 col-span-2">
+                <p class="font-bold mr-1">{{ question.questionNumber }}. </p> {{ question.statement }}
+              </div>
+              <atomic-checkbox-choice [question]="question"
+                                      [formControlName]="question.questionNumber"
+                                      [useAlphabetLabels]="true"></atomic-checkbox-choice>
+            </div>
+          }
+        }
+      </section>
+
+      <section id="submit" class="flex justify-center mt-10">
         <atomic-button (click)="submitAnswers()">Schicken</atomic-button>
       </section>
 

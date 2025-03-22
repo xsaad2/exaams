@@ -3,26 +3,24 @@ import { CommonModule } from '@angular/common';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {Question} from "@com.language.exams/exaams-backend/utils";
 
-export type BinaryQuestion = {
-  question: Question;
-  correctAnswer: string;
-}
 
 @Component({
-  selector: 'lib-binary-question',
+  selector: 'atomic-checkbox-choice',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './binary-question.component.html',
+  templateUrl: './atomic-checkbox-choice.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: BinaryQuestionComponent
+      useExisting: AtomicCheckboxChoiceComponent
     }
   ]
 })
-export class BinaryQuestionComponent implements ControlValueAccessor{
-  btnsLabels = input.required<string[] | undefined>();
+export class AtomicCheckboxChoiceComponent implements ControlValueAccessor{
+  alphabetLabels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'];
+  useAlphabetLabels = input<boolean>(false);
+  btnsLabels = signal<string[] | undefined>(undefined);
   chosenOption = input<string>('');
   isDisabled = input<boolean>(false);
   value = signal<string>('');
@@ -34,6 +32,7 @@ export class BinaryQuestionComponent implements ControlValueAccessor{
 
   constructor() {
     effect(() => {
+      this.btnsLabels.set(this.question()?.options)
       if(this.question()?.questionNumber === 0) {
         this.clicked.set(true)
         this.value.set(this.question()?.correctAnswer || '');
@@ -68,4 +67,5 @@ export class BinaryQuestionComponent implements ControlValueAccessor{
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
+
 }
