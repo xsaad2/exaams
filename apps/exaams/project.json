@@ -20,6 +20,10 @@
           {
             "glob": "**/*",
             "input": "apps/exaams/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/exaams/src/assets"
           }
         ],
         "styles": ["apps/exaams/src/styles.scss"],

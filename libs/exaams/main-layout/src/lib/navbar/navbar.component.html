@@ -1,21 +1,43 @@
-<nav class="w-full">
-  <div class="flex h-[50px] bg-cyan-400 justify-between">
 
-    <div class="flex px-3 space-x-3">
-        <atomic-icon class="self-center" iconName="menu" (click)="openDrawer()" [rotated]="!drawerIsOpen"></atomic-icon>
-        <span class="self-center">Logo</span>
+<header class="sticky top-0 z-50 w-full border-b bg-white py-1 px-4">
+  <div class="flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
+    <div class="flex gap-2 items-center text-primary font-bold text-xl">
+      <span class="text-2xl font-bold animate-bounce">{{ name }}</span>
     </div>
-    @if(store.isLoggedIn()){
-      <div class="flex px-3 self-center">
-        <atomic-button (click)="onLogout()">Logout</atomic-button>
-        <div class="self-center">{{store.user()?.displayName}}</div>
-      </div>
-    } @else {
-      <div class="flex px-3 self-center">
-        <atomic-button (click)="onLogin()">Login</atomic-button >
-        <div class="self-center">{{store.user()?.displayName}}</div>
-      </div>
-    }
+    <div class="md:flex flex-1 hidden  items-center justify-end space-x-4">
+      <nav class="flex items-center space-x-1">
+        <a
+          href="#features"
+          class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:underline px-4 py-2"
+        >
+        Features
+        </a>
+        <a
+          href="#how-it-works"
+          class="text-sm font-medium text-muted-foreground transition-colors hover:underline hover:text-foreground px-4 py-2"
+        >
+        How It Works
+        </a>
+        <a
+          href="#testimonials"
+          class="text-sm font-medium text-muted-foreground transition-colors hover:underline hover:text-foreground px-4 py-2"
+        >
+        Testimonials
+        </a>
 
+        @if(store.isLoggedIn()){
+          <div class="flex px-3 self-center gap-4">
+            <atomic-button color="transparent" (click)="onLogout()">Logout</atomic-button>
+            <atomic-button (click)="onDash()">DashBoard</atomic-button>
+            <div class="self-center">{{store.user()?.displayName}}</div>
+          </div>
+        } @else {
+          <atomic-button color="primary">Start Training Now</atomic-button>
+          <div class="flex px-3 self-center">
+            <atomic-button color="transparent" (click)="onLogin()">Login</atomic-button >
+          </div>
+        }
+      </nav>
+    </div>
   </div>
-</nav>
+</header>

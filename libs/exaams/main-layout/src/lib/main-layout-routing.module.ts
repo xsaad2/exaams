@@ -6,17 +6,18 @@ import { authenticationGuard } from '@com.language.exams/exaams/auth/data-access
 const routes: Routes = [
   {
     path: '',
+    loadComponent: () =>
+      import('./landing/landing.component').then((c) => c.LandingComponent),
+    canActivate: [],
+  },
+  {
+    path: 'exams',
     component: ExaamsMainLayoutComponent,
     children: [
       {
-        path: 'landing',
-        loadComponent: () =>
-          import('./landing/landing.component').then((c) => c.LandingComponent),
+        path: '',
+        loadChildren: () => import('@com.language.exams/exaams/exam/feature').then(c => c.ExamModule),
         canActivate: [authenticationGuard],
-      },
-      {
-        path: 'exam',
-        loadChildren: () => import('@com.language.exams/exaams/exam/feature').then(c => c.ExamModule)
       },
     ],
   },
