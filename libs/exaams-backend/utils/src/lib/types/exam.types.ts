@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client';
-import { Express } from 'express';
-import { Multer } from 'multer';
+import {Prisma} from '@prisma/client';
+import {Express} from 'express';
+import {Multer} from 'multer';
 
 export type File = Express.Multer.File;
 
@@ -14,24 +14,53 @@ export type ReadingTaskFiles = {
   audioTrack?: File;
 }
 
-export type B1ExamWithTasks = Prisma.B1ExamGetPayload<{
-  include: {
-    readingTask1: true;
-    readingTask2a: true;
-    readingTask2b: true;
-    readingTask3: true;
-    readingTask4: true;
-    readingTask5: true;
-    hearingTask1: true;
-    hearingTask2: true;
-    hearingTask3: true;
-    hearingTask4: true;
-    audioTrack: true;
-  }
-}>
+export type B1ExamWithTasks = {
+  id: string,
+  name: string,
+  readingTask3ImageUrls?: string;
+  readingTask1: ReadingTask;
+  readingTask2a: ReadingTask;
+  readingTask2b: ReadingTask;
+  readingTask3: ReadingTask;
+  readingTask4: ReadingTask;
+  readingTask5: ReadingTask;
+  hearingTask1: HearingTask;
+  hearingTask2: HearingTask;
+  hearingTask3: HearingTask;
+  hearingTask4: HearingTask;
+}
 
-export type ReadingTaskWithQuestions = Prisma.ReadingTaskGetPayload<{
-  include: {
-    questions: true;
-  }
-}>
+export type ReadingTask = {
+  id: string;
+  taskNumber: string;
+  instructions: string;
+  textTitle: string;
+  textContents: string;
+  workTimeInMinutes: number;
+  questions: Question[];
+  imagesContents: Image;
+}
+
+export type HearingTask = {
+  id: string;
+  taskNumber: string;
+  instructions: string;
+  audioContext: string;
+  workTimeInMinutes: number;
+  questions: Question[];
+}
+
+export type Question = {
+  id: string;
+  questionNumber: number;
+  statement: string;
+  questionText?: string;
+  options: string[];
+  correctAnswer: string;
+}
+
+export type Image = {
+  id: string;
+  name: string;
+  imageData: ArrayBuffer;
+}

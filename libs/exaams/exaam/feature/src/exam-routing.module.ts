@@ -4,9 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'b1',
     loadComponent: () =>
-      import('./lib/exaams-exam/exaams-exam.component').then((c) => c.ExaamsExamComponent)
+      import('./lib/b1-exam/b1-exam.component').then((c) => c.B1ExamComponent)
   },
   {
     path: 'create',

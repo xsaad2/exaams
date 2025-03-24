@@ -1,0 +1,6 @@
+<select class="block h-full w-full px-4 py-2 text-sm border rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500 dark:border-gray-600">
+  <option>--Option auswählen</option>
+  @for (option of options(); track option){
+    <option [value]="option">option</option>
+  }
+</select>

@@ -5,20 +5,21 @@ const { join } = require('path');
 module.exports = {
   content: [
     join(__dirname, 'src/**/!(*.stories|*.spec).{ts,html}'),
+    join(__dirname, '../../libs/exaams/**/src/lib/**/*.{ts,html}'),
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
     extend: {
       colors: {
         primary: {
-          light: '#ecaa7e',
-          DEFAULT: '#ec874a',
-          dark: '#e86b19',
+          light: '#BEE3F8', // Soft Sky Blue
+          DEFAULT: '#0284C7', // Deep Ocean Blue
+          dark: '#0369A1', // Dark Blue
         },
         secondary: {
-          light: '#bae6fd',
-          DEFAULT: '#0ea5e9',
-          dark: '#0369a1',
+          light: '#FFD3B6', // Warm Peach
+          DEFAULT: '#FB923C', // Vibrant Orange
+          dark: '#EA580C', // Deep Orange
         },
         warn: {
           light: '#f58c8c',

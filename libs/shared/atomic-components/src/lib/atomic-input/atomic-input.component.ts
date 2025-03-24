@@ -4,7 +4,7 @@ import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-type InputType = 'textarea'|'checkbox'|'text'| 'password' |  'email'| 'number' | 'tel' | 'url'  | 'search' | 'date' | 'time' | 'datetime-local' | 'month' | 'week' | 'color';
+type InputType = 'textarea'|'checkbox' | 'radio' |'text'| 'password' |  'email'| 'number' | 'tel' | 'url'  | 'search' | 'date' | 'time' | 'datetime-local' | 'month' | 'week' | 'color';
 
 
 @Component({
@@ -26,15 +26,18 @@ export class AtomicInputComponent implements ControlValueAccessor {
   public type = input<InputType>('text');
   public errorMessage = input<string>('');
   public isInvalid = input<boolean>(false);
+  public checked = input<boolean>(false);
+  public checkboxText = input<string>('');
+  public isDisabled = input<boolean>(false);
+  public checkBoxValue = input<string>('');
+  public id = input<string>('');
 
   public value = '';
-  public isDisabled = false;
 
   onChange = (value: string) => {
   };
   onTouched: () => void = () => {
   };
-
 
   writeValue(value: string): void {
     this.value = value;
@@ -50,7 +53,7 @@ export class AtomicInputComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    // this.isDisabled = isDisabled;
   }
 
   handleInputChange(event: Event): void {
@@ -58,6 +61,9 @@ export class AtomicInputComponent implements ControlValueAccessor {
     this.value = target.value;
     this.onChange(this.value);
     this.onTouched();
+    if(this.type() === 'checkbox'){
+      this.value = this.checkBoxValue();
+    }
   }
 
   onInput(value: typeof this.value): void {
