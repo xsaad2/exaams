@@ -1,0 +1,40 @@
+<div class="relative flex flex-col p-4 m-4 border-black border-2 w-full"
+  [ngClass]="{
+    'bg-green-200': randomColorNumber === 1,
+    'bg-blue-300': randomColorNumber === 2,
+    'bg-red-400': randomColorNumber === 3,
+    'bg-yellow-200': randomColorNumber === 4,
+    'bg-purple-200': randomColorNumber === 5,
+    'bg-pink-300': randomColorNumber === 6,
+    'bg-orange-200': randomColorNumber === 7,
+    'bg-gray-200': randomColorNumber === 8,
+    'bg-teal-400': randomColorNumber === 9,
+    'bg-indigo-300': randomColorNumber === 10,
+  }"
+>
+  <span class="text-2xl font-semibold text-center">{{ poster()?.title }}</span>
+  <span>{{ poster()?.body }} </span>
+  <span class="text-xl italic">{{ poster()?.hook }}</span>
+  @for (service of poster()?.offeredServices; track service) {
+  <ul>
+    <li>- {{ service }}</li>
+  </ul>
+  }
+  <span>{{ poster()?.hook }}</span>
+  <span [ngClass]="{
+    'text-left' : randomPositionNumber === 1,
+    'text-center' : randomPositionNumber === 2,
+  }" class="text-md font-medium mt-6">{{ poster()?.contact }}</span>
+  <span
+    class="text-lg font-bold bg-white absolute flex items-center justify-center w-10 h-10 border-2 border-black -top-4 -left-4">
+    {{ poster()?.letter?.toUpperCase() }}
+    @if (isChosen) {
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <svg class="w-20 h-20 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4L20 20M4 20L20 4"></path>
+      </svg>
+    </div>
+    }
+  </span>
+</div>
