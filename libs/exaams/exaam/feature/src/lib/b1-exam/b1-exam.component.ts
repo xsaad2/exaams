@@ -150,7 +150,6 @@ export class B1ExamComponent {
           })
         }
       }
-      console.log(this.hearingTask1Elements())
     });
 
     effect(() => {

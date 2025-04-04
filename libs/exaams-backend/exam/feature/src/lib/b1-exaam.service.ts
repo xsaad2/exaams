@@ -106,7 +106,7 @@ export class B1ExaamService {
             title: p.title,
             hook: p.hook ?? '',
             body: p.body ?? '',
-            offeredServices: p.offeredServices ?? '',
+            offeredServices: p.offeredServices ?? [],
             siteUrl: p.siteUrl ?? '',
             contact: p.contact ?? '',
           }))
@@ -268,6 +268,9 @@ export class B1ExaamService {
         }
       }
     });
+    if (!exam) {
+      throw new InternalServerErrorException('Exam not found');
+    }
     const presignedUrl = await this.minioClient.presignedUrl('GET', process.env['MINIO_AUDIO_BUCKET'] || '', `${exam?.name}-audioTrack`);
     return {
       ...exam,
