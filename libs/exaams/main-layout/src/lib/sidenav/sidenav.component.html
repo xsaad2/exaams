@@ -1,0 +1,50 @@
+<div class="flex flex-row sticky items-center justify-between text-center px-4 bg-primary-light h-16 shadow-lg">
+    <div class="flex items-center flex-row gap-3">
+      <atomic-icon (click)="toggleSideNav()" class="hidden md:block" iconName="menu"></atomic-icon>
+      <lib-logo></lib-logo>
+    </div>
+    <div class="md:mr-10 flex items-center">
+      <atomic-dropdown [dropDownItems]="dropDownItems"></atomic-dropdown>
+    </div>
+</div>
+<div class="flex flex-row">
+  @if (true) {
+  <div class="transition-all duration-150 ease-in-out hidden md:flex flex-col space-y-1 px-2 h-screen border-r border-black w-64 mt-2"
+    [ngClass]="{
+      'w-64': isOpen(),
+      'w-16': !isOpen()
+    }"
+  >
+    @for (element of  sideNavElements; track element.label) {
+      <div (click)="onSelectSidenavElement(element)"
+           class="flex flex-row gap-2 items-center font-semibold mt-2 rounded h-10 p-2 hover:bg-hover hover:cursor-pointer"
+      [ngClass]="{
+      'bg-hover': element.label === selectedElement.label,
+       'w-56': isOpen(),
+        'w-12': !isOpen()
+      }">
+        <atomic-icon [iconName]="element.iconName"></atomic-icon>
+        @if(isOpen()){
+        <span>{{element.label}}</span>
+        }
+      </div>
+    }
+  </div>
+  }
+  <div class="flex md:hidden flex-row justify-between bg-white items-center fixed w-full bottom-0">
+    @for (element of  sideNavElements; track element.label) {
+      <div (click)="onSelectSidenavElement(element)"
+           class="flex w-full shadow-2xl flex-col items-center justify-center rounded h-fit p-2 "
+           [ngClass]="{
+           'bg-hover': element.label === selectedElement.label,
+           'font-bold': element.label === selectedElement.label
+           }">
+        <atomic-icon [iconName]="element.iconName"></atomic-icon>
+        <span>{{element.label}}</span>
+      </div>
+    }
+  </div>
+  <ng-content class="mb-20 col-span-9"></ng-content>
+
+</div>
+

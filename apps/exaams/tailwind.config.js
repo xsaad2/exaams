@@ -26,19 +26,24 @@ module.exports = {
           DEFAULT: '#ec1010',
           dark: '#b90404',
         },
-        success:{
+        success: {
           light: '#75e57e',
           DEFAULT: '#22dc1c',
           dark: '#08a44d',
         },
+        hover: {
+          light: '#f9fafb',
+          DEFAULT: '#f3f4f6',
+          dark: '#e5e7eb',
+        },
         white: '#ffffff',
         black: '#000000',
       },
-      fontFamily:{
+      fontFamily: {
         fontFamily: {
           heading: '"Nunito", sans-serif',
-        }
-      }
+        },
+      },
     },
   },
   plugins: [],
