@@ -1,18 +1,19 @@
+import { CommonModule } from '@angular/common';
 import {Component, effect, ElementRef, inject, input, signal, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {B1Exam} from '@prisma/client';
-import {B1ExamService} from "@com.language.exams/exaams/exaam/data-access";
-import {B1ExamWithTasks, Question} from "@com.language.exams/exaams-backend/utils";
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { B1ExamWithTasks, Question } from "@com.language.exams/exaams-backend/utils";
+import { B1ExamService } from "@com.language.exams/exaams/exaam/data-access";
 import {
   AtomicButtonComponent,
   AtomicCheckboxChoiceComponent,
   AtomicInputComponent
 } from "@com.language.exams/shared/atomic-components";
-import {B1ExamTaskContentComponent} from "../b1-exam-task-content/b1-exam-task-content.component";
-import {TaskExampleContainerComponent} from "../task-example-container/task-example-container.component";
-import {YesNoComponent} from "../yes-no/yes-no.component";
-import {BinaryQuestionComponent} from "../binary-question/binary-question.component";
+import { B1Exam } from '@prisma/client';
+import { AdPosterComponent } from "../ad-poster/ad-poster.component";
+import { B1ExamTaskContentComponent } from "../b1-exam-task-content/b1-exam-task-content.component";
+import { BinaryQuestionComponent } from "../binary-question/binary-question.component";
+import { TaskExampleContainerComponent } from "../task-example-container/task-example-container.component";
+import { YesNoComponent } from "../yes-no/yes-no.component";
 
 export type HearingTask1Element = {
   first: Question,
@@ -22,7 +23,7 @@ export type HearingTask1Element = {
 @Component({
   selector: 'lib-b1-exam',
   standalone: true,
-  imports: [CommonModule, AtomicButtonComponent, ReactiveFormsModule, B1ExamTaskContentComponent, TaskExampleContainerComponent, AtomicInputComponent, YesNoComponent, BinaryQuestionComponent, AtomicCheckboxChoiceComponent],
+  imports: [CommonModule, AtomicButtonComponent, ReactiveFormsModule, B1ExamTaskContentComponent, TaskExampleContainerComponent, AtomicInputComponent, YesNoComponent, BinaryQuestionComponent, AtomicCheckboxChoiceComponent, AdPosterComponent],
   templateUrl: './b1-exam.component.html',
 })
 export class B1ExamComponent {
@@ -126,15 +127,17 @@ export class B1ExamComponent {
       })
     })
 
+
     const readingTask3Control = this.answersForm.get('readingTask3');
     if (readingTask3Control) {
       readingTask3Control.valueChanges.subscribe(value => {
-        this.chosenOptions.set(Object.values(value).filter(val => (val !== '' && val != '0')) as string[]);
+        this.chosenOptions.set(Object.values(value).filter(val => (val !== '' && val != '0' && val)) as string[]);
       });
     }
 
     effect(() => {
       const exam = this.exam();
+
       if (exam !== null) {
         const exampleQuestions = exam.hearingTask1.questions.filter(q => {
           return q.questionNumber === 12 || q.questionNumber === 13;
@@ -146,9 +149,13 @@ export class B1ExamComponent {
             second: exam.hearingTask1.questions.find(q => q.questionNumber === i + 1) as Question
           })
         }
-
       }
-      console.log(this.hearingTask1Elements())
+    });
+
+    effect(() => {
+      const exam = this.exam();
+      const examplePoster = exam?.readingTask3.questions.find(q => q.questionNumber === 0)?.correctAnswer;
+      this.chosenOptions().push(examplePoster || '');
     });
   }
 

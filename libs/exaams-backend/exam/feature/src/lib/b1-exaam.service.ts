@@ -1,22 +1,21 @@
-import {PrismaService, ReadingTaskFiles} from '@com.language.exams/exaams-backend/utils';
-import {Injectable, InternalServerErrorException} from '@nestjs/common';
-import {B1Exam} from '@prisma/client';
-import {Express} from 'express';
+import { PrismaService, ReadingTaskFiles } from '@com.language.exams/exaams-backend/utils';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Express } from 'express';
+import { Client } from 'minio';
 
+import { InternalCoreModule } from "@nestjs/core/injector/internal-core-module";
 // This is a hack to make Multer available in the Express namespace
-import {Client} from 'minio';
-import {InternalCoreModule} from "@nestjs/core/injector/internal-core-module";
 
 type File = Express.Multer.File;
 
 @Injectable()
 export class B1ExaamService {
   private minioClient = new Client({
-    endPoint: process.env.MINIO_ENDPOINT,
-    port: 9000,
+    endPoint: process.env['MINIO_ENDPOINT'] || 'localhost',
+    port: process.env['MINIO_PORT'] ? parseInt(process.env['MINIO_PORT']) : 9000,
     useSSL: false,
-    accessKey: process.env.MINIO_ACCESS_KEY,
-    secretKey: process.env.MINIO_SECRET_KEY
+    accessKey: process.env['MINIO_ACCESS_KEY'],
+    secretKey: process.env['MINIO_SECRET_KEY']
   });
 
   constructor(private prismaService: PrismaService) {
@@ -24,12 +23,7 @@ export class B1ExaamService {
 
   async createB1Exaam(exaam: any, files: ReadingTaskFiles) {
     try {
-      if (!files || !files.audioTrack || !files.audioTrack[0]) {
-        throw new InternalServerErrorException('Audio track file is missing')
-      }
-      if (!files || !files.readingTask3Image || !files.readingTask3Image[0]) {
-        throw new InternalServerErrorException('readingTask3Image file is missing');
-      }
+
       const {
         name,
         createdAt,
@@ -48,8 +42,11 @@ export class B1ExaamService {
 
 
       // Upload audio file
+
+      if (!files || !files.audioTrack || !files.audioTrack[0]) {
+        throw new InternalServerErrorException('Audio track file is missing')
+      }
       await this.minioClient.putObject(process.env.MINIO_AUDIO_BUCKET, `${name}-audioTrack`, files.audioTrack[0].buffer);
-      await this.minioClient.putObject(process.env.MINIO_IMAGES_BUCKET, `${name}-readingTask3Image`, files.readingTask3Image[0].buffer);
 
       return this.prismaService.b1Exam.create({
         data: {
@@ -80,7 +77,7 @@ export class B1ExaamService {
           hearingTask4: this.createHearingTask(hearingTask4)
         }
       });
-    } catch (e){
+    } catch (e) {
       console.error('Error while creating Exam', e);
       throw new InternalServerErrorException('Error while creating Exam', { cause: e });
     }
@@ -103,6 +100,17 @@ export class B1ExaamService {
             questionText: q.questionText
           }))
         },
+        posters: readingTask.posters ? {
+          create: readingTask.posters.map((p: any) => ({
+            letter: p.letter,
+            title: p.title,
+            hook: p.hook ?? '',
+            body: p.body ?? '',
+            offeredServices: p.offeredServices ?? [],
+            siteUrl: p.siteUrl ?? '',
+            contact: p.contact ?? '',
+          }))
+        } : undefined,
         imagesContents: file ? {
           create: {
             name: file[0].originalname,
@@ -154,8 +162,8 @@ export class B1ExaamService {
         readingTask3: {
           include: {
             questions: true,
-            imagesContents: true
-
+            imagesContents: true,
+            posters: true
           }
         },
         readingTask4: {
@@ -192,8 +200,7 @@ export class B1ExaamService {
     });
     return await Promise.all(
       res.map(async (e) => {
-        e.audioTrackUrl = await this.minioClient.presignedUrl('GET', process.env.MINIO_AUDIO_BUCKET, `${e.name}-audioTrack`);
-        e.readingTask3ImageUrls = await this.minioClient.presignedUrl('GET', process.env.MINIO_IMAGES_BUCKET, `${e.name}-readingTask3Image`);
+        e.audioTrackUrl = await this.minioClient.presignedUrl('GET', process.env['MINIO_AUDIO_BUCKET'] || '', `${e.name}-audioTrack`);
         return e;
       })
     );
@@ -206,19 +213,65 @@ export class B1ExaamService {
       },
       include: {
         creator: true,
-        readingTask1: true,
-        readingTask2a: true,
-        readingTask2b: true,
-        readingTask3: true,
-        readingTask4: true,
-        readingTask5: true,
-        hearingTask1: true,
-        hearingTask2: true,
-        hearingTask3: true,
-        hearingTask4: true
+        readingTask1: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask2a: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask2b: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask3: {
+          include: {
+            questions: true,
+            posters: true,
+            imagesContents: true
+
+          }
+        },
+        readingTask4: {
+          include: {
+            questions: true
+          }
+        },
+        readingTask5: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask1: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask2: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask3: {
+          include: {
+            questions: true
+          }
+        },
+        hearingTask4: {
+          include: {
+            questions: true
+          }
+        }
       }
     });
-    const presignedUrl = await this.minioClient.presignedUrl('GET', process.env.MINIO_AUDIO_BUCKET, `${exam.name}-audioTrack`);
+    if (!exam) {
+      throw new InternalServerErrorException('Exam not found');
+    }
+    const presignedUrl = await this.minioClient.presignedUrl('GET', process.env['MINIO_AUDIO_BUCKET'] || '', `${exam?.name}-audioTrack`);
     return {
       ...exam,
       audioTrackUrl: presignedUrl
