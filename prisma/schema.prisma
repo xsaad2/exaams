@@ -64,28 +64,12 @@ model ReadingTask {
   workTimeInMinutes Int?
   imagesContents    Image?
   questions         Question[]
-  posters           AdPoster[]
   examReadingTask1  B1Exam?    @relation("ReadingTask1")
   examReadingTask2a B1Exam?    @relation("ReadingTask2a")
   examReadingTask2b B1Exam?    @relation("ReadingTask2b")
   examReadingTask3  B1Exam?    @relation("ReadingTask3")
   examReadingTask4  B1Exam?    @relation("ReadingTask4")
   examReadingTask5  B1Exam?    @relation("ReadingTask5")
-}
-
-model AdPoster {
-  id              String       @id @default(cuid())
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  letter          String
-  title           String
-  hook            String?
-  body            String?
-  offeredServices String[]
-  siteUrl         String?
-  contact         String?
-  readingTaskId   Int?
-  readingTask     ReadingTask? @relation(fields: [readingTaskId], references: [id])
 }
 
 model HearingTask {

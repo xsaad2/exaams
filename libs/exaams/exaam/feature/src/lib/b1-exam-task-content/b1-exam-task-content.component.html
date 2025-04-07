@@ -1,32 +1,28 @@
 @if (readingTask()) {
-<div class="flex flex-row gap-5 items-center">
-  <span class="text-2xl font-bold">{{ taskNumber }}: </span>
-  <span class="font-[600] text-center"
-    >Arbeitszeit {{ readingTask()?.workTimeInMinutes }} Minutes</span
-  >
-</div>
+  <div class="flex flex-row gap-5 items-center">
+    <span class="text-2xl font-bold">{{ taskNumber }}: </span>
+    <span class="font-[600] text-center">Arbeitszeit {{ readingTask()?.workTimeInMinutes }} Minutes</span>
+  </div>
 
-<div class="mt-5">
-  <p [innerHTML]="instructionsLine1(readingTask()?.instructions || '')"></p>
-  <p [innerHTML]="instructionsLine2(readingTask()?.instructions || '')"></p>
-</div>
+  <div class="mt-5">
+    <p [innerHTML]="instructionsLine1(readingTask()?.instructions || '')"></p>
+    <p [innerHTML]="instructionsLine2(readingTask()?.instructions || '')"></p>
+  </div>
 
-@if (readingTask()?.textTitle && readingTask()?.textContents) {
-<div class="flex flex-col align-middle mt-5 border-2 border-black rounded-md">
-  <p class="text-center text-2xl font-bold italic mt-10">
-    {{ readingTask()?.textTitle }}
-  </p>
-  <p
-    class="text-balance p-10 break-normal"
-    [innerHTML]="readingTask()?.textContents"
-  ></p>
-</div>
-} } @if (hearingTask()) {
-<div class="flex flex-col gap-5">
-  <p class="text-2xl font-bold">{{ taskNumber }}:</p>
-  <p [innerHTML]="hearingInstructions(hearingTask()?.instructions || '')"></p>
-</div>
+  @if (readingTask()?.textTitle && readingTask()?.textContents) {
+    <div class="flex flex-col align-middle mt-5 border-2 border-black rounded-md">
+      <p class="text-center text-2xl font-bold italic mt-10">{{ readingTask()?.textTitle }}</p>
+      <p class="text-balance p-10 whitespace-pre-line" [innerHTML]="readingTask()?.textContents"></p>
+    </div>
+  }
+}
+@if (hearingTask()) {
+  <div class="flex flex-col gap-5">
+    <p class="text-2xl font-bold">{{ taskNumber }}: </p>
+    <p [innerHTML]="hearingInstructions(hearingTask()?.instructions || '')"></p>
+  </div>
 
-@if (hearingTask()?.audioContext) {
-<p class="italic mt-5">{{ hearingTask()?.audioContext }}</p>
-} }
+  @if (hearingTask()?.audioContext) {
+      <p class="italic mt-5">{{ hearingTask()?.audioContext }}</p>
+  }
+}

@@ -13,6 +13,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 
 // This is a hack to make Multer available in the Express namespace
+import { ReadingTaskFiles } from '@com.language.exams/exaams-backend/utils';
 
 type File = Express.Multer.File;
 

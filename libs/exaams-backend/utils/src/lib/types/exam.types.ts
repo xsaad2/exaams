@@ -39,18 +39,6 @@ export type ReadingTask = {
   workTimeInMinutes: number;
   questions: Question[];
   imagesContents: Image;
-  posters: Poster[];
-}
-
-export type Poster = {
-  id: string;
-  letter: string;
-  title: string;
-  hook?: string;
-  body?: string;
-  offeredServices: string[];
-  siteUrl?: string;
-  contact?: string;
 }
 
 export type HearingTask = {
