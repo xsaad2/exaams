@@ -1,0 +1,16 @@
+<div class="flex flex-row items-center justify-center text-w gap-2 w-32 px-2 text- py-1 rounded-md"
+     [ngClass]="{
+       'text-success-dark': counting,
+       'text-danger': minutesLeft < 1
+     }">
+  <div class="text-2xl flex items-center w-20 justify-center gap-1 font-semibold">
+    <atomic-icon (click)="startTimer()" iconName="schedule"></atomic-icon>
+    {{ currentTime }}</div>
+  <div class="flex items-center text-center">
+    @if (!counting) {
+      <atomic-icon (click)="startTimer()" iconName="play_arrow"></atomic-icon>
+    } @else {
+      <atomic-icon (click)="stopTimer()" iconName="pause"></atomic-icon>
+    }
+  </div>
+</div>

@@ -1,8 +1,9 @@
-import { Component, inject, model, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AtomicDropdownComponent,
   AtomicIconComponent,
+  AtomicTimerComponent,
   DropdownItem,
 } from '@com.language.exams/shared/atomic-components';
 import { Router } from '@angular/router';
@@ -23,6 +24,7 @@ export type SideNavTrack = {
     AtomicIconComponent,
     AtomicDropdownComponent,
     LogoComponent,
+    AtomicTimerComponent,
   ],
   templateUrl: './sidenav.component.html',
 })
@@ -48,11 +50,18 @@ export class SidenavComponent {
       click: () => this.onLogout(),
     },
   ];
-  isOpen = signal(true);
+  isOpen = signal(false);
   selectedElement = this.sideNavElements[0];
 
   toggleSideNav() {
     this.isOpen.set(!this.isOpen());
+  }
+
+  openSideNav() {
+    this.isOpen.set(true);
+  }
+  closeSideNav() {
+    this.isOpen.set(false);
   }
 
   onLogout() {
