@@ -21,7 +21,7 @@ module.exports = {
           DEFAULT: '#FB923C', // Vibrant Orange
           dark: '#EA580C', // Deep Orange
         },
-        warn: {
+        danger: {
           light: '#f58c8c',
           DEFAULT: '#ec1010',
           dark: '#b90404',

@@ -1,15 +1,15 @@
-<div class="flex flex-row sticky items-center justify-between text-center px-4 bg-primary-light h-16 shadow-lg">
+<div class="flex flex-row fixed w-full items-center justify-between text-center px-4 bg-white h-16 shadow-lg">
     <div class="flex items-center flex-row gap-3">
       <atomic-icon (click)="toggleSideNav()" class="hidden md:block" iconName="menu"></atomic-icon>
       <lib-logo></lib-logo>
     </div>
-    <div class="md:mr-10 flex items-center">
+    <div class="md:mr-10 flex items-center gap-4">
+      <atomic-timer></atomic-timer>
       <atomic-dropdown [dropDownItems]="dropDownItems"></atomic-dropdown>
     </div>
 </div>
 <div class="flex flex-row">
-  @if (true) {
-  <div class="transition-all duration-150 ease-in-out hidden md:flex flex-col space-y-1 px-2 h-screen border-r border-black w-64 mt-2"
+  <div (mouseenter)="openSideNav()" (mouseleave)="closeSideNav()"  class="hidden md:flex flex-col space-y-1 px-2 h-screen border-r border-gray-200 w-64 transition-all mt-[70px] duration-200 ease-in-out "
     [ngClass]="{
       'w-64': isOpen(),
       'w-16': !isOpen()
@@ -30,7 +30,7 @@
       </div>
     }
   </div>
-  }
+
   <div class="flex md:hidden flex-row justify-between bg-white items-center fixed w-full bottom-0">
     @for (element of  sideNavElements; track element.label) {
       <div (click)="onSelectSidenavElement(element)"

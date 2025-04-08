@@ -5,3 +5,4 @@ export * from './lib/atomic-text/atomic-text.component';
 export * from './lib/atomic-checkbox-choice/atomic-checkbox-choice.component';
 export * from './lib/atomic-dropdown/atomic-dropdown.component';
 export * from './lib/click-away.directive';
+export * from './lib/atomic-timer/atomic-timer.component';
