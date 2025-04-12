@@ -1,7 +1,7 @@
 @if (readingTask()) {
 <div class="flex flex-row gap-5 items-center">
-  <span class="text-2xl font-bold">{{ taskNumber }}: </span>
-  <span class="font-[600] text-center"
+  <span class="text-xl font-bold">{{ taskNumber }}: </span>
+  <span class="text-sm text-muted-foreground text-center"
     >Arbeitszeit {{ readingTask()?.workTimeInMinutes }} Minutes</span
   >
 </div>

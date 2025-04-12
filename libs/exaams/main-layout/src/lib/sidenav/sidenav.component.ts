@@ -33,7 +33,7 @@ export class SidenavComponent {
   protected readonly authService = inject(AuthenticationService);
 
   protected sideNavElements: SideNavTrack[] = [
-    { label: 'Dashboard', link: '/', iconName: 'home' },
+    { label: 'Dashboard', link: '/exams/dashboard', iconName: 'dashboard' },
     { label: 'History', link: '/', iconName: 'manage_search' },
     { label: 'Stats', link: '/', iconName: 'monitoring' },
   ];

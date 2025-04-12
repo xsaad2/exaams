@@ -1,34 +1,61 @@
 import { CommonModule } from '@angular/common';
-import {Component, effect, ElementRef, inject, input, signal, ViewChild} from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { B1ExamWithTasks, Question } from "@com.language.exams/exaams-backend/utils";
-import { B1ExamService } from "@com.language.exams/exaams/exaam/data-access";
+import {
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  B1AnswersForm,
+  B1ExamWithTasks,
+  Question,
+} from '@com.language.exams/exaams-backend/utils';
+import { B1ExamService } from '@com.language.exams/exaams/exaam/data-access';
 import {
   AtomicButtonComponent,
   AtomicCheckboxChoiceComponent,
-  AtomicInputComponent
-} from "@com.language.exams/shared/atomic-components";
+  AtomicInputComponent,
+} from '@com.language.exams/shared/atomic-components';
 import { B1Exam } from '@prisma/client';
-import { AdPosterComponent } from "../ad-poster/ad-poster.component";
-import { B1ExamTaskContentComponent } from "../b1-exam-task-content/b1-exam-task-content.component";
-import { BinaryQuestionComponent } from "../binary-question/binary-question.component";
-import { TaskExampleContainerComponent } from "../task-example-container/task-example-container.component";
-import { YesNoComponent } from "../yes-no/yes-no.component";
+import { AdPosterComponent } from '../ad-poster/ad-poster.component';
+import { B1ExamTaskContentComponent } from '../b1-exam-task-content/b1-exam-task-content.component';
+import { BinaryQuestionComponent } from '../binary-question/binary-question.component';
+import { TaskExampleContainerComponent } from '../task-example-container/task-example-container.component';
+import { YesNoComponent } from '../yes-no/yes-no.component';
 
 export type HearingTask1Element = {
-  first: Question,
-  second: Question,
-}
+  first: Question;
+  second: Question;
+};
 
 @Component({
   selector: 'lib-b1-exam',
   standalone: true,
-  imports: [CommonModule, AtomicButtonComponent, ReactiveFormsModule, B1ExamTaskContentComponent, TaskExampleContainerComponent, AtomicInputComponent, YesNoComponent, BinaryQuestionComponent, AtomicCheckboxChoiceComponent, AdPosterComponent],
+  imports: [
+    CommonModule,
+    AtomicButtonComponent,
+    ReactiveFormsModule,
+    B1ExamTaskContentComponent,
+    TaskExampleContainerComponent,
+    AtomicInputComponent,
+    YesNoComponent,
+    BinaryQuestionComponent,
+    AtomicCheckboxChoiceComponent,
+    AdPosterComponent,
+  ],
   templateUrl: './b1-exam.component.html',
 })
 export class B1ExamComponent {
-
-  protected b1Exam = input<B1Exam | null>()
+  protected b1Exam = input<B1Exam | null>();
   protected exam = signal<B1ExamWithTasks | null>(null);
   protected answersForm!: FormGroup;
   protected chosenOptions = signal<string[]>([]);
@@ -36,13 +63,13 @@ export class B1ExamComponent {
 
   private readonly fb = inject(FormBuilder);
 
-  private readonly b1ExamService = inject(B1ExamService)
+  private readonly b1ExamService = inject(B1ExamService);
 
   constructor() {
     this.b1ExamService.getAllB1Exams().subscribe((exams) => {
-      console.log(exams)
+      console.log(exams);
       this.exam.set(exams[0]);
-    })
+    });
 
     this.answersForm = this.fb.group({
       readingTask1: this.fb.group({
@@ -124,14 +151,17 @@ export class B1ExamComponent {
         28: ['', Validators.required],
         29: ['', Validators.required],
         30: ['', Validators.required],
-      })
-    })
-
+      }),
+    });
 
     const readingTask3Control = this.answersForm.get('readingTask3');
     if (readingTask3Control) {
-      readingTask3Control.valueChanges.subscribe(value => {
-        this.chosenOptions.set(Object.values(value).filter(val => (val !== '' && val != '0' && val)) as string[]);
+      readingTask3Control.valueChanges.subscribe((value) => {
+        this.chosenOptions.set(
+          Object.values(value).filter(
+            (val) => val !== '' && val != '0' && val
+          ) as string[]
+        );
       });
     }
 
@@ -139,22 +169,31 @@ export class B1ExamComponent {
       const exam = this.exam();
 
       if (exam !== null) {
-        const exampleQuestions = exam.hearingTask1.questions.filter(q => {
+        const exampleQuestions = exam.hearingTask1.questions.filter((q) => {
           return q.questionNumber === 12 || q.questionNumber === 13;
-        })
-        this.hearingTask1Elements().push({ first: exampleQuestions[0], second: exampleQuestions[1] });
+        });
+        this.hearingTask1Elements().push({
+          first: exampleQuestions[0],
+          second: exampleQuestions[1],
+        });
         for (let i = 1; i < 11; i += 2) {
           this.hearingTask1Elements().push({
-            first: exam.hearingTask1.questions.find(q => q.questionNumber === i) as Question,
-            second: exam.hearingTask1.questions.find(q => q.questionNumber === i + 1) as Question
-          })
+            first: exam.hearingTask1.questions.find(
+              (q) => q.questionNumber === i
+            ) as Question,
+            second: exam.hearingTask1.questions.find(
+              (q) => q.questionNumber === i + 1
+            ) as Question,
+          });
         }
       }
     });
 
     effect(() => {
       const exam = this.exam();
-      const examplePoster = exam?.readingTask3.questions.find(q => q.questionNumber === 0)?.correctAnswer;
+      const examplePoster = exam?.readingTask3.questions.find(
+        (q) => q.questionNumber === 0
+      )?.correctAnswer;
       this.chosenOptions().push(examplePoster || '');
     });
   }
@@ -164,9 +203,13 @@ export class B1ExamComponent {
   }
 
   @ViewChild('checkbox') checkbox!: ElementRef<HTMLInputElement>;
-  onCheckboxChange(selectedOption: string, questionNumber: number, task: string) {
+  onCheckboxChange(
+    selectedOption: string,
+    questionNumber: number,
+    task: string
+  ) {
     for (let i = 0; i < 3; i++) {
-      const id = task + questionNumber + i
+      const id = task + questionNumber + i;
       const checkbox = document.getElementById(id) as HTMLInputElement;
       if (checkbox.value !== selectedOption) {
         checkbox.checked = false;
@@ -175,8 +218,7 @@ export class B1ExamComponent {
   }
 
   submitAnswers() {
-    console.log(this.answersForm.value)
+    const attempt: B1AnswersForm = this.answersForm.value;
+    console.log(attempt);
   }
-
-
 }
