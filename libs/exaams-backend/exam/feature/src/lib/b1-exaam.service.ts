@@ -3,10 +3,9 @@ import {
   ReadingTaskFiles,
 } from '@com.language.exams/exaams-backend/utils';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { Express } from 'express';
 import { Client } from 'minio';
 
-import { InternalCoreModule } from '@nestjs/core/injector/internal-core-module';
+import { Express } from 'express';
 // This is a hack to make Multer available in the Express namespace
 
 type File = Express.Multer.File;
@@ -239,78 +238,89 @@ export class B1ExaamService {
     );
   }
 
-  async getExaamByName(name: string) {
-    const exam = await this.prismaService.b1Exam.findUnique({
-      where: {
-        name: name,
-      },
-      include: {
-        creator: true,
-        readingTask1: {
-          include: {
-            questions: true,
+  async getExaamByNameOrId(nameOrId: string) {
+    try {
+      const exam = await this.prismaService.b1Exam.findFirst({
+        where: {
+          OR: [
+            {
+              id: nameOrId,
+            },
+            {
+              name: nameOrId,
+            },
+          ],
+        },
+        include: {
+          creator: true,
+          readingTask1: {
+            include: {
+              questions: true,
+            },
+          },
+          readingTask2a: {
+            include: {
+              questions: true,
+            },
+          },
+          readingTask2b: {
+            include: {
+              questions: true,
+            },
+          },
+          readingTask3: {
+            include: {
+              questions: true,
+              posters: true,
+            },
+          },
+          readingTask4: {
+            include: {
+              questions: true,
+            },
+          },
+          readingTask5: {
+            include: {
+              questions: true,
+            },
+          },
+          hearingTask1: {
+            include: {
+              questions: true,
+            },
+          },
+          hearingTask2: {
+            include: {
+              questions: true,
+            },
+          },
+          hearingTask3: {
+            include: {
+              questions: true,
+            },
+          },
+          hearingTask4: {
+            include: {
+              questions: true,
+            },
           },
         },
-        readingTask2a: {
-          include: {
-            questions: true,
-          },
-        },
-        readingTask2b: {
-          include: {
-            questions: true,
-          },
-        },
-        readingTask3: {
-          include: {
-            questions: true,
-            posters: true,
-            imagesContents: true,
-          },
-        },
-        readingTask4: {
-          include: {
-            questions: true,
-          },
-        },
-        readingTask5: {
-          include: {
-            questions: true,
-          },
-        },
-        hearingTask1: {
-          include: {
-            questions: true,
-          },
-        },
-        hearingTask2: {
-          include: {
-            questions: true,
-          },
-        },
-        hearingTask3: {
-          include: {
-            questions: true,
-          },
-        },
-        hearingTask4: {
-          include: {
-            questions: true,
-          },
-        },
-      },
-    });
-    if (!exam) {
-      throw new InternalServerErrorException('Exam not found');
+      });
+
+      const presignedUrl = await this.minioClient.presignedUrl(
+        'GET',
+        process.env['MINIO_AUDIO_BUCKET'] || '',
+        `${exam?.name}-audioTrack`
+      );
+      return {
+        ...exam,
+        audioTrackUrl: presignedUrl,
+      };
+    } catch (e) {
+      console.error('Error while getting Exam', e);
+      throw new InternalServerErrorException('Error while getting Exam', {
+        cause: e,
+      });
     }
-    const presignedUrl = await this.minioClient.presignedUrl(
-      'GET',
-      process.env['MINIO_AUDIO_BUCKET'] || '',
-      `${exam?.name}-audioTrack`
-    );
-    return {
-      ...exam,
-      audioTrackUrl: presignedUrl,
-    };
   }
 }

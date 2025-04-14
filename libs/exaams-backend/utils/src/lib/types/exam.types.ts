@@ -1,6 +1,5 @@
-import {Prisma} from '@prisma/client';
-import {Express} from 'express';
-import {Multer} from 'multer';
+import { Express } from 'express';
+import { Multer } from 'multer';
 
 export type File = Express.Multer.File;
 
@@ -12,11 +11,11 @@ export type ReadingTaskFiles = {
   readingTask4Image?: File;
   readingTask5Image?: File;
   audioTrack?: File;
-}
+};
 
 export type B1ExamWithTasks = {
-  id: string,
-  name: string,
+  id: string;
+  name: string;
   readingTask3ImageUrls?: string;
   readingTask1: ReadingTask;
   readingTask2a: ReadingTask;
@@ -28,19 +27,19 @@ export type B1ExamWithTasks = {
   hearingTask2: HearingTask;
   hearingTask3: HearingTask;
   hearingTask4: HearingTask;
-}
+};
 
 export type ReadingTask = {
-  id: string;
+  id: number;
   taskNumber: string;
   instructions: string;
   textTitle: string;
   textContents: string;
   workTimeInMinutes: number;
   questions: Question[];
-  imagesContents: Image;
-  posters: Poster[];
-}
+  imagesContents?: Image;
+  posters?: Poster[];
+};
 
 export type Poster = {
   id: string;
@@ -51,16 +50,16 @@ export type Poster = {
   offeredServices: string[];
   siteUrl?: string;
   contact?: string;
-}
+};
 
 export type HearingTask = {
-  id: string;
+  id: number;
   taskNumber: string;
   instructions: string;
   audioContext: string;
-  workTimeInMinutes: number;
+  workTimeInMinutes?: number;
   questions: Question[];
-}
+};
 
 export type Question = {
   id: string;
@@ -69,10 +68,40 @@ export type Question = {
   questionText?: string;
   options: string[];
   correctAnswer: string;
-}
+};
+
+export type B1AnswersForm = {
+  readingTask1: {
+    [key: string]: string;
+  };
+  readingTask2a: {
+    [key: string]: string;
+  };
+  readingTask2b: {
+    [key: string]: string;
+  };
+  readingTask3: {
+    [key: string]: string;
+  };
+  readingTask4: {
+    [key: string]: string;
+  };
+  hearingTask1: {
+    [key: string]: string;
+  };
+  hearingTask2: {
+    [key: string]: string;
+  };
+  hearingTask3: {
+    [key: string]: string;
+  };
+  hearingTask4: {
+    [key: string]: string;
+  };
+};
 
 export type Image = {
   id: string;
   name: string;
   imageData: ArrayBuffer;
-}
+};

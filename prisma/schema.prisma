@@ -14,45 +14,47 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  email     String    @unique
-  name      String?
-  role      String?
-  b1exams   B1Exam[]
+  id            String          @id @default(cuid())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime?       @updatedAt
+  email         String          @unique
+  name          String?
+  role          String?
+  b1exams       B1Exam[]
+  B1ExamAttempt B1ExamAttempt[]
 }
 
 model B1Exam {
-  id                    String      @id @default(cuid())
-  name                  String      @unique
-  createdAt             DateTime    @default(now())
+  id                    String          @id @default(cuid())
+  name                  String          @unique
+  createdAt             DateTime        @default(now())
   deletedAt             DateTime?
   creatorId             String
-  creator               User?       @relation(fields: [creatorId], references: [id])
-  readingTask1Id        Int         @unique
-  readingTask1          ReadingTask @relation("ReadingTask1", fields: [readingTask1Id], references: [id])
-  readingTask2aId       Int         @unique
-  readingTask2a         ReadingTask @relation("ReadingTask2a", fields: [readingTask2aId], references: [id])
-  readingTask2bId       Int         @unique
-  readingTask2b         ReadingTask @relation("ReadingTask2b", fields: [readingTask2bId], references: [id])
-  readingTask3Id        Int         @unique
-  readingTask3          ReadingTask @relation("ReadingTask3", fields: [readingTask3Id], references: [id])
-  readingTask4Id        Int         @unique
-  readingTask4          ReadingTask @relation("ReadingTask4", fields: [readingTask4Id], references: [id])
-  readingTask5Id        Int         @unique
-  readingTask5          ReadingTask @relation("ReadingTask5", fields: [readingTask5Id], references: [id])
-  hearingTask1Id        Int         @unique
-  hearingTask1          HearingTask @relation("HearingTask1", fields: [hearingTask1Id], references: [id])
-  hearingTask2Id        Int         @unique
-  hearingTask2          HearingTask @relation("HearingTask2", fields: [hearingTask2Id], references: [id])
-  hearingTask3Id        Int         @unique
-  hearingTask3          HearingTask @relation("HearingTask3", fields: [hearingTask3Id], references: [id])
-  hearingTask4Id        Int         @unique
-  hearingTask4          HearingTask @relation("HearingTask4", fields: [hearingTask4Id], references: [id])
+  creator               User?           @relation(fields: [creatorId], references: [id])
+  readingTask1Id        Int             @unique
+  readingTask1          ReadingTask     @relation("ReadingTask1", fields: [readingTask1Id], references: [id])
+  readingTask2aId       Int             @unique
+  readingTask2a         ReadingTask     @relation("ReadingTask2a", fields: [readingTask2aId], references: [id])
+  readingTask2bId       Int             @unique
+  readingTask2b         ReadingTask     @relation("ReadingTask2b", fields: [readingTask2bId], references: [id])
+  readingTask3Id        Int             @unique
+  readingTask3          ReadingTask     @relation("ReadingTask3", fields: [readingTask3Id], references: [id])
+  readingTask4Id        Int             @unique
+  readingTask4          ReadingTask     @relation("ReadingTask4", fields: [readingTask4Id], references: [id])
+  readingTask5Id        Int             @unique
+  readingTask5          ReadingTask     @relation("ReadingTask5", fields: [readingTask5Id], references: [id])
+  hearingTask1Id        Int             @unique
+  hearingTask1          HearingTask     @relation("HearingTask1", fields: [hearingTask1Id], references: [id])
+  hearingTask2Id        Int             @unique
+  hearingTask2          HearingTask     @relation("HearingTask2", fields: [hearingTask2Id], references: [id])
+  hearingTask3Id        Int             @unique
+  hearingTask3          HearingTask     @relation("HearingTask3", fields: [hearingTask3Id], references: [id])
+  hearingTask4Id        Int             @unique
+  hearingTask4          HearingTask     @relation("HearingTask4", fields: [hearingTask4Id], references: [id])
   audioTrack            Audio?
   audioTrackUrl         String?
   readingTask3ImageUrls String?
+  attempts              B1ExamAttempt[]
 }
 
 model ReadingTask {
@@ -111,6 +113,39 @@ model Question {
   readingTask    ReadingTask? @relation(fields: [readingTaskId], references: [id])
   hearingTaskId  Int?
   hearingTask    HearingTask? @relation(fields: [hearingTaskId], references: [id])
+}
+
+model B1ExamAttempt {
+  attemptId   String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  examId      String
+  exam        B1Exam    @relation(fields: [examId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  score       Int?
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+  answers     Answer[]
+
+  @@unique([attemptId, userId, examId])
+}
+
+model Answer {
+  id           String        @id @default(cuid())
+  taskName     String // Enum defining the specific task (e.g., readingTask1)
+  itemNumber   String // The question/item number within the task (e.g., "1", "7", "23") - String to accommodate potential non-numeric keys
+  chosenAnswer String? // The actual answer provided (nullable if answers can be skipped)
+  isCorrect    Boolean?
+  attemptId    String
+  testAttempt  B1ExamAttempt @relation(fields: [attemptId], references: [attemptId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Ensure that an item number within a specific task is unique for a given test attempt
+  @@unique([attemptId, taskName, itemNumber])
+  @@index([attemptId]) // Index for faster lookups by attempt
 }
 
 model Image {
