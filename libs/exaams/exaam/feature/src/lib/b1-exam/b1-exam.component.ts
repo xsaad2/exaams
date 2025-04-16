@@ -26,11 +26,13 @@ import {
   AtomicInputComponent,
 } from '@com.language.exams/shared/atomic-components';
 import { B1Exam } from '@prisma/client';
-import { AdPosterComponent } from '../ad-poster/ad-poster.component';
-import { B1ExamTaskContentComponent } from '../b1-exam-task-content/b1-exam-task-content.component';
-import { BinaryQuestionComponent } from '../binary-question/binary-question.component';
-import { TaskExampleContainerComponent } from '../task-example-container/task-example-container.component';
-import { YesNoComponent } from '../yes-no/yes-no.component';
+import {
+  YesNoComponent,
+  TaskExampleContainerComponent,
+  AdPosterComponent,
+  BinaryQuestionComponent,
+  B1ExamTaskContentComponent,
+} from '@com.language.exams/exaams/exaam/ui';
 
 export type HearingTask1Element = {
   first: Question;
