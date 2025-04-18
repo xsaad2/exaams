@@ -1,6 +1,6 @@
 
 <div (atomicAwayClick)="close()" (click)="open()" class="rounded-full bg-primary hover:cursor-pointer ">
-  <img ngSrc="{{(profileImageUrll | async) || noImageAvatar }}" alt="Profile Picture" width="40" height="40" class="rounded-full bg-primary hover:cursor-pointer">
+  <img ngSrc="{{ (profileImageUrll | async) || noImageAvatar  }} " alt="Profile Picture" width="40" height="40" class="rounded-full bg-primary hover:cursor-pointer">
 </div>
 @if (isOpen()) {
   <div class="flex flex-col items-center absolute right-10 mt-3 z-50 py-1  bg-white border border-black rounded shadow-lg max-w-fit">

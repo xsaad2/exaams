@@ -1,0 +1,12 @@
+<div class="mt-4">
+  <div class="mb-1 flex items-center justify-between text-sm">
+        <span
+          class="text-muted-foreground">Progress</span><span class="font-medium">{{ percentage() }}%</span>
+  </div>
+  <div class="relative w-full overflow-hidden rounded-full bg-hover h-2">
+    <div #bar class="h-full flex-1 bg-black transition-all"></div>
+  </div>
+  @if (underTitle()) {
+    <p class="mt-2 text-xs text-muted-foreground">{{ underTitle() }} </p>
+  }
+</div>
