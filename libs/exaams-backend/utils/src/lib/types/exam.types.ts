@@ -70,36 +70,6 @@ export type Question = {
   correctAnswer: string;
 };
 
-export type B1AnswersForm = {
-  readingTask1: {
-    [key: string]: string;
-  };
-  readingTask2a: {
-    [key: string]: string;
-  };
-  readingTask2b: {
-    [key: string]: string;
-  };
-  readingTask3: {
-    [key: string]: string;
-  };
-  readingTask4: {
-    [key: string]: string;
-  };
-  hearingTask1: {
-    [key: string]: string;
-  };
-  hearingTask2: {
-    [key: string]: string;
-  };
-  hearingTask3: {
-    [key: string]: string;
-  };
-  hearingTask4: {
-    [key: string]: string;
-  };
-};
-
 export type Image = {
   id: string;
   name: string;

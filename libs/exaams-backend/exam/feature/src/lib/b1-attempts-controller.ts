@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { B1AttemptService } from './b1-attempt.service';
-import { B1AnswersForm } from '../../../../utils/src';
+import { B1AnswersForm } from '@com.language.exams/exaams-backend/utils';
 
 @Controller('attempts')
 export class B1AttemptsController {

@@ -1,4 +1,5 @@
 import {
+  executePromise,
   PrismaService,
   ReadingTaskFiles,
 } from '@com.language.exams/exaams-backend/utils';
@@ -6,6 +7,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Client } from 'minio';
 
 import { Express } from 'express';
+import { B1ExamAttempt } from '@prisma/client';
+import { ExamCatalogItem } from '../../../../utils/src/lib/types/exam-catalog.types';
 // This is a hack to make Multer available in the Express namespace
 
 type File = Express.Multer.File;
@@ -239,6 +242,9 @@ export class B1ExaamService {
   }
 
   async getExaamByNameOrId(nameOrId: string) {
+    if (!nameOrId) {
+      throw new InternalServerErrorException('Name or ID is missing');
+    }
     try {
       const exam = await this.prismaService.b1Exam.findFirst({
         where: {
@@ -322,5 +328,65 @@ export class B1ExaamService {
         cause: e,
       });
     }
+  }
+
+  async getExamsCatalog() {
+    const [exams, examsError] = await executePromise(
+      this.prismaService.b1Exam.findMany()
+    );
+
+    if (examsError || !exams) {
+      console.warn('Error while getting Exams Catalog', examsError);
+      throw new InternalServerErrorException(
+        'Error while getting Exams Catalog',
+        {
+          cause: examsError,
+        }
+      );
+    }
+
+    const [attempts, attemptsError] = await executePromise(
+      this.prismaService.b1ExamAttempt.findMany()
+    );
+
+    if (attemptsError || !attempts) {
+      console.warn('Error while getting Exams Attempts', attemptsError);
+      throw new InternalServerErrorException(
+        'Error while getting Exams Attempts',
+        {
+          cause: attemptsError,
+        }
+      );
+    }
+    const result: ExamCatalogItem[] = [];
+
+    exams.forEach((exam) => {
+      const attemptsForExam = attempts.filter(
+        (attempt) => attempt.examId === exam.id
+      );
+
+      let lastAttemptByDate = null;
+
+      if (attemptsForExam.length > 0) {
+        lastAttemptByDate = attemptsForExam.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )[0];
+      }
+
+      const catalogItem: ExamCatalogItem = {
+        id: exam.id,
+        name: exam.name,
+        attemptsCount: attemptsForExam.length,
+        level: 'B1',
+        lastScore: lastAttemptByDate?.score || null,
+        lastAttemptDate: lastAttemptByDate?.createdAt || null,
+        progress: 10,
+      };
+
+      result.push(catalogItem);
+    });
+
+    return result;
   }
 }

@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { B1ExaamService } from './b1-exaam.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
 import { B1AttemptService } from './b1-attempt.service';
+import { ExamCatalogItem } from '@com.language.exams/exaams-backend/utils';
 
 // This is a hack to make Multer available in the Express namespace
 
@@ -54,6 +54,17 @@ export class ExaamController {
       return await this.b1ExaamService.getAllExaams();
     } catch (e) {
       console.error('Error while getting Exaams', e);
+      return e;
+    }
+  }
+
+  @Get('/catalog')
+  async getExaamCatalog(): Promise<ExamCatalogItem[]> {
+    console.log('getExaamCatalog');
+    try {
+      return this.b1ExaamService.getExamsCatalog();
+    } catch (e) {
+      console.error('Error while getting Exaam', e);
       return e;
     }
   }
