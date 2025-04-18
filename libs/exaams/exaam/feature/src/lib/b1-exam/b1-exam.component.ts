@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  computed,
   effect,
   ElementRef,
   inject,
+  Input,
   input,
   signal,
   ViewChild,
@@ -19,13 +21,15 @@ import {
   B1ExamWithTasks,
   Question,
 } from '@com.language.exams/exaams-backend/utils';
-import { B1ExamService } from '@com.language.exams/exaams/exaam/data-access';
+import {
+  B1ExamService,
+  B1ExamStore,
+} from '@com.language.exams/exaams/exaam/data-access';
 import {
   AtomicButtonComponent,
   AtomicCheckboxChoiceComponent,
   AtomicInputComponent,
 } from '@com.language.exams/shared/atomic-components';
-import { B1Exam } from '@prisma/client';
 import {
   YesNoComponent,
   TaskExampleContainerComponent,
@@ -33,6 +37,7 @@ import {
   BinaryQuestionComponent,
   B1ExamTaskContentComponent,
 } from '@com.language.exams/exaams/exaam/ui';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export type HearingTask1Element = {
   first: Question;
@@ -57,8 +62,13 @@ export type HearingTask1Element = {
   templateUrl: './b1-exam.component.html',
 })
 export class B1ExamComponent {
-  protected b1Exam = input<B1Exam | null>();
-  protected exam = signal<B1ExamWithTasks | null>(null);
+  private readonly route = inject(ActivatedRoute);
+  private b1ExamStore = inject(B1ExamStore);
+
+  protected exam = computed(() => {
+    return this.b1ExamStore.getCurrentExam();
+  });
+
   protected answersForm!: FormGroup;
   protected chosenOptions = signal<string[]>([]);
   protected hearingTask1Elements = signal<HearingTask1Element[]>([]);
@@ -68,11 +78,10 @@ export class B1ExamComponent {
   private readonly b1ExamService = inject(B1ExamService);
 
   constructor() {
-    this.b1ExamService.getAllB1Exams().subscribe((exams) => {
-      console.log(exams);
-      this.exam.set(exams[0]);
-    });
-
+    const examIdFromRoute = this.route.snapshot.paramMap.get('examId');
+    if (examIdFromRoute) {
+      this.b1ExamStore.loadSelectedExam(examIdFromRoute);
+    }
     this.answersForm = this.fb.group({
       readingTask1: this.fb.group({
         1: ['', Validators.required],
