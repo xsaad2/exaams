@@ -188,7 +188,7 @@ export class B1AttemptService {
           ++totalNumberOfQuestions;
           return {
             taskName,
-            itemNumber,
+            itemNumber: itemNumberInt,
             chosenAnswer,
             isCorrect,
           };

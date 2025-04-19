@@ -6,7 +6,7 @@ import {
   AtomicTimerComponent,
   DropdownItem,
 } from '@com.language.exams/shared/atomic-components';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '@com.language.exams/exaams/auth/data-access';
 import { LogoComponent } from '../logo/logo.component';
 
@@ -31,10 +31,11 @@ export type SideNavTrack = {
 export class SidenavComponent {
   protected readonly router = inject(Router);
   protected readonly authService = inject(AuthenticationService);
+  protected readonly route = inject(ActivatedRoute);
 
   protected sideNavElements: SideNavTrack[] = [
-    { label: 'Dashboard', link: '/exams/dashboard', iconName: 'dashboard' },
-    { label: 'History', link: '/', iconName: 'manage_search' },
+    { label: 'Dashboard', link: '/', iconName: 'dashboard' },
+    { label: 'Practice', link: '/dashboard', iconName: 'menu_book' },
     { label: 'Stats', link: '/', iconName: 'monitoring' },
   ];
 
@@ -52,6 +53,18 @@ export class SidenavComponent {
   ];
   isOpen = signal(false);
   selectedElement = this.sideNavElements[0];
+
+  constructor() {
+    this.route.url.subscribe((url) => {
+      const currentUrl = url[0].path;
+      const selectedElement = this.sideNavElements.find(
+        (element) => element.link === `/${currentUrl}`
+      );
+      if (selectedElement) {
+        this.selectedElement = selectedElement;
+      }
+    });
+  }
 
   toggleSideNav() {
     this.isOpen.set(!this.isOpen());

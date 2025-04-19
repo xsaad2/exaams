@@ -42,6 +42,6 @@ export class NavbarComponent {
   }
 
   onDash() {
-    this.router.navigate(['/exams/dashboard']);
+    this.router.navigate(['/dashboard']);
   }
 }

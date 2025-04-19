@@ -11,12 +11,15 @@ const routes: Routes = [
     canActivate: [],
   },
   {
-    path: 'exams',
+    path: '',
     component: ExaamsMainLayoutComponent,
     children: [
       {
         path: '',
-        loadChildren: () => import('@com.language.exams/exaams/exam/feature').then(c => c.ExamModule),
+        loadChildren: () =>
+          import('@com.language.exams/exaams/exam/feature').then(
+            (c) => c.ExamModule
+          ),
         canActivate: [authenticationGuard],
       },
     ],
