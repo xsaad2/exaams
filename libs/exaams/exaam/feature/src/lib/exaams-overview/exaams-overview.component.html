@@ -1,16 +1,16 @@
-<div class="flex flex-col p-5 py-5 gap-5 h-full mx-auto ">
+<div class="flex hidden flex-col p-5 py-5 gap-5 h-full mx-auto ">
   <div class="flex flex-col items-start w-full">
     <div class="text-2xl font-bold">Exams</div>
     <span class="text-muted">Browse exams and take them at your own convenience</span>
   </div>
 
 
-
   <div class="overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left rtl:text-right">
       <caption class="p-5 text-lg font-semibold text-left rtl:text-right">
         Available Test models
-        <p class="mt-1 text-sm font-normal ">Browse a list of test models designed to help you excel your Certificate exam. </p>
+        <p class="mt-1 text-sm font-normal ">Browse a list of test models designed to help you excel your Certificate
+          exam. </p>
       </caption>
       <thead class="text-xs  uppercase bg-gray-50 ">
       <tr>
@@ -18,13 +18,19 @@
           Model
         </th>
         <th scope="col" class="px-6 py-3">
-          status
+          level
         </th>
         <th scope="col" class="px-6 py-3">
-          Level
+          Number of tries
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Latest attempt
         </th>
         <th scope="col" class="px-6 py-3">
           Last score
+        </th>
+        <th scope="col" class="px-6 py-3">
+          progress
         </th>
         <th scope="col" class="px-6 py-3">
           Action
@@ -32,26 +38,53 @@
       </tr>
       </thead>
       <tbody>
-      <tr class="bg-white border-b border-gray-200">
-        <th scope="row" class="px-6 py-4 font-medium ">
-          ModelTest1
-        </th>
-        <td class="px-6 py-4">
-          Available
-        </td>
-        <td class="px-6 py-4">
-          B1
-        </td>
-        <td class="px-6 py-4">
-          80/100
-        </td>
-        <td class="px-6 py-4">
-          <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-        </td>
-      </tr>
+        @for (item of examsCatalog(); track item.id) {
 
+          <tr class="bg-white border-b border-gray-200">
+            <th scope="row" class="px-6 py-4 font-medium ">
+              {{ item.name }}
+            </th>
+            <td class="px-6 py-4">
+              {{ item.level }}
+            </td>
+            <td class="px-6 py-4">
+              {{ item.attemptsCount }}
+            </td>
+            <td class="px-6 py-4">
+              @if (item.lastAttemptDate) {
+                {{ item.lastAttemptDate | date: 'short' }}
+              } @else {
+                ---
+              }
+            </td>
+            <td class="px-6 py-4">
+              @if (item.lastScore) {
+                {{ item.lastScore }}
+              } @else {
+                Not Scored Yet
+              }
+
+            </td>
+            <td class="px-6 py-4">
+              @if (item.progress) {
+                {{ item.progress }}
+              } @else {
+                Not started yet
+              }
+            </td>
+            <td class="px-6 py-4">
+              <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
 
+</div>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+  @for (item of examsCatalog(); track item.id) {
+      <lib-exam-card [exam]="item"></lib-exam-card>
+  }
 </div>
