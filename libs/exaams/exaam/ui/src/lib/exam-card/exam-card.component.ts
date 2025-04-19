@@ -23,17 +23,19 @@ import { B1ExamStore } from '@com.language.exams/exaams/exaam/data-access';
 export class ExamCardComponent {
   private readonly router = inject(Router);
   private readonly examStore = inject(B1ExamStore);
-  exam = input<ExamCatalogItem>();
+  exam = input.required<ExamCatalogItem>();
 
   onButtonCLick() {
     this.examStore.loadSelectedExam(this.exam()?.id || '');
-    this.router.navigate([`/exams/b1/${this.exam()?.id}`]);
+    this.router.navigate([`/b1/${this.exam()?.id}`]);
   }
 
   buttonLabel = computed(() => {
-    if (this.exam()?.lastScore) {
+    if (this.exam().openAttempt) {
+      return 'Continue';
+    } else if (this.exam().attemptsCount > 0) {
       return 'Take again';
     }
-    return 'New try';
+    return 'Start';
   });
 }
