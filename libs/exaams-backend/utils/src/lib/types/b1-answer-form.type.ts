@@ -1,4 +1,5 @@
 export type B1AnswersForm = {
+  examId: string;
   readingTask1: {
     [key: string]: string;
   };

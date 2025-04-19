@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { B1ExaamService } from './b1-exaam.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { B1AttemptService } from './b1-attempt.service';
+import { B1AttemptService } from '../b1-attempt/b1-attempt.service';
 import { ExamCatalogItem } from '@com.language.exams/exaams-backend/utils';
 
 // This is a hack to make Multer available in the Express namespace

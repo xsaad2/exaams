@@ -2,13 +2,19 @@ import {
   executePromise,
   PrismaService,
   ReadingTaskFiles,
-} from '@com.language.exams/exaams-backend/utils';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+} from '../../../../../utils/src';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Client } from 'minio';
 
 import { Express } from 'express';
 import { B1ExamAttempt } from '@prisma/client';
-import { ExamCatalogItem } from '../../../../utils/src/lib/types/exam-catalog.types';
+import { ExamCatalogItem } from '../../../../../utils/src/lib/types/exam-catalog.types';
+import { B1AttemptService } from '../b1-attempt/b1-attempt.service';
 // This is a hack to make Multer available in the Express namespace
 
 type File = Express.Multer.File;
@@ -25,7 +31,11 @@ export class B1ExaamService {
     secretKey: process.env['MINIO_SECRET_KEY'],
   });
 
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    @Inject(forwardRef(() => B1AttemptService))
+    private readonly b1AttemptService: B1AttemptService
+  ) {}
 
   async createB1Exaam(exaam: any, files: ReadingTaskFiles) {
     try {
@@ -373,6 +383,10 @@ export class B1ExaamService {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )[0];
       }
+      console.log(
+        'lastAttemptByDate?.isCompleted',
+        lastAttemptByDate?.isCompleted
+      );
 
       const catalogItem: ExamCatalogItem = {
         id: exam.id,
@@ -380,8 +394,9 @@ export class B1ExaamService {
         attemptsCount: attemptsForExam.length,
         level: 'B1',
         lastScore: lastAttemptByDate?.score || null,
-        lastAttemptDate: lastAttemptByDate?.createdAt || null,
-        progress: 10,
+        lastAttemptDate: lastAttemptByDate?.updatedAt || null,
+        progress: lastAttemptByDate?.progress || null,
+        openAttempt: lastAttemptByDate?.isCompleted === false,
       };
 
       result.push(catalogItem);

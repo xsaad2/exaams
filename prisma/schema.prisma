@@ -124,26 +124,23 @@ model B1ExamAttempt {
   userId      String?
   user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   score       Int?
+  progress    Int?
   isCompleted Boolean   @default(false)
   completedAt DateTime?
   answers     Answer[]
-
-  @@unique([attemptId, userId, examId])
 }
 
 model Answer {
   id           String        @id @default(cuid())
-  taskName     String // Enum defining the specific task (e.g., readingTask1)
+  taskName     String
   itemNumber   String // The question/item number within the task (e.g., "1", "7", "23") - String to accommodate potential non-numeric keys
   chosenAnswer String? // The actual answer provided (nullable if answers can be skipped)
   isCorrect    Boolean?
   attemptId    String
   testAttempt  B1ExamAttempt @relation(fields: [attemptId], references: [attemptId], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Ensure that an item number within a specific task is unique for a given test attempt
   @@unique([attemptId, taskName, itemNumber])
   @@index([attemptId]) // Index for faster lookups by attempt
 }

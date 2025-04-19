@@ -7,4 +7,5 @@ export type ExamCatalogItem = {
   lastAttemptDate: Date;
   lastScore: number | null;
   progress: number | null;
+  openAttempt: boolean;
 };
