@@ -19,6 +19,7 @@
     "@nestjs/config": "^3.2.3",
     "@nestjs/core": "^10.0.2",
     "@nestjs/platform-express": "^10.0.2",
+    "@ngrx/operators": "^19.1.0",
     "@ngrx/signals": "^18.0.2",
     "@prisma/client": "^6.2.1",
     "@tailwindcss/postcss": "^4.0.8",

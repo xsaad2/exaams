@@ -30,6 +30,9 @@
       "@com.language.exams/exaams/exaam/data-access": [
         "libs/exaams/exaam/data-access/src/index.ts"
       ],
+      "@com.language.exams/exaams/exaam/ui": [
+        "libs/exaams/exaam/ui/src/index.ts"
+      ],
       "@com.language.exams/exaams/exam/feature": [
         "libs/exaams/exaam/feature/src/index.ts"
       ],

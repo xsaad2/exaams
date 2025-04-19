@@ -1,0 +1,31 @@
+<div class="rounded-lg border bg-card text-card-foreground shadow-sm flex h-full flex-col" data-v0-t="card">
+  <div class="flex flex-col space-y-1.5 p-6 pb-3 border-b border-gray-100 bg-gradient-to-r from-primary-light to-white">
+    <div class="flex items-center justify-between">
+      <div
+        class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-sky-50 text-sky-700"
+      >{{ exam().level }}
+      </div>
+    </div>
+    <h3 class="text-2xl font-semibold leading-none tracking-tight mt-2 line-clamp-1">{{ exam().name }}</h3>
+  </div>
+  <div class="p-6 pt-5 grid items-center w-full pb-3">
+     @if (exam().attemptsCount === 0) {
+      <p class="text-muted self-center justify-self-center">You still have never taken this exam </p>
+    } @else {
+      <div class="flex flex-col gap-1">
+        <atomic-progress-bar [maxValue]="100" [actualValue]="exam().progress || 0"></atomic-progress-bar>
+        <div class="flex flex-row  gap-2">
+          <span class="text-sm text-gray-700 italic">Last attempt: </span>
+          <span class="text-sm font-medium">{{ exam().lastAttemptDate | date }} </span>
+        </div>
+        <div class="flex flex-row  gap-2">
+          <span class="text-sm text-gray-700 italic">Last score: </span>
+          <span class="text-sm font-medium">{{exam().lastScore}}/60 </span>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="w-full p-6 pt-0 mt-auto">
+    <atomic-button (click)="onButtonCLick()">{{ buttonLabel() }}</atomic-button>
+  </div>
+</div>

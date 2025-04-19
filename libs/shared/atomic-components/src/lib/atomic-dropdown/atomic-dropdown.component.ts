@@ -1,8 +1,16 @@
-import { Component, HostListener, inject, input, model } from '@angular/core';
+import {
+  Component,
+  computed,
+  HostListener,
+  inject,
+  input,
+  model,
+} from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { AtomicIconComponent } from '../atomic-icon/atomic-icon.component';
 import { HostListenerDirective } from '../click-away.directive';
 import { AuthenticationService } from '@com.language.exams/exaams/auth/data-access';
+import { take } from 'rxjs/operators';
 
 export type DropdownItem = {
   label: string;
@@ -26,8 +34,8 @@ export class AtomicDropdownComponent {
   isOpen = model(false);
   dropDownItems = input<DropdownItem[]>([]);
 
-  profileImageUrll = this.authService.getProfilePicture();
   noImageAvatar = 'empty-avatar.webp';
+  profileImageUrll = this.authService.getProfilePicture();
 
   open() {
     this.isOpen.update(() => true);
