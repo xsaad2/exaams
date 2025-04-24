@@ -1,1 +1,1 @@
-export * from './lib/pipes/marked.pipe';
+export * from './lib/constants/alphabets';

@@ -1,15 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  computed,
-  effect,
-  ElementRef,
-  inject,
-  Input,
-  input,
-  signal,
-  ViewChild,
-} from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -18,26 +8,23 @@ import {
 } from '@angular/forms';
 import {
   B1AnswersForm,
-  B1ExamWithTasks,
   Question,
 } from '@com.language.exams/exaams-backend/utils';
-import {
-  B1ExamService,
-  B1ExamStore,
-} from '@com.language.exams/exaams/exaam/data-access';
+import { B1ExamStore } from '@com.language.exams/exaams/exaam/data-access';
 import {
   AtomicButtonComponent,
   AtomicCheckboxChoiceComponent,
+  AtomicIconComponent,
   AtomicInputComponent,
+  AtomicRadioInputComponent,
 } from '@com.language.exams/shared/atomic-components';
 import {
-  YesNoComponent,
   TaskExampleContainerComponent,
   AdPosterComponent,
   BinaryQuestionComponent,
   B1ExamTaskContentComponent,
 } from '@com.language.exams/exaams/exaam/ui';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 export type HearingTask1Element = {
   first: Question;
@@ -54,10 +41,10 @@ export type HearingTask1Element = {
     B1ExamTaskContentComponent,
     TaskExampleContainerComponent,
     AtomicInputComponent,
-    YesNoComponent,
     BinaryQuestionComponent,
-    AtomicCheckboxChoiceComponent,
     AdPosterComponent,
+    AtomicIconComponent,
+    AtomicRadioInputComponent,
   ],
   templateUrl: './b1-exam.component.html',
 })
@@ -65,6 +52,7 @@ export class B1ExamComponent {
   private readonly route = inject(ActivatedRoute);
   private b1ExamStore = inject(B1ExamStore);
 
+  isLoading = computed(() => this.b1ExamStore.isLoading());
   protected exam = computed(() => {
     return this.b1ExamStore.getCurrentExam();
   });
@@ -75,8 +63,6 @@ export class B1ExamComponent {
 
   private readonly fb = inject(FormBuilder);
 
-  private readonly b1ExamService = inject(B1ExamService);
-
   constructor() {
     const examIdFromRoute = this.route.snapshot.paramMap.get('examId');
     if (examIdFromRoute) {
@@ -84,84 +70,84 @@ export class B1ExamComponent {
     }
     this.answersForm = this.fb.group({
       readingTask1: this.fb.group({
-        1: ['', Validators.required],
-        2: ['', Validators.required],
-        3: ['', Validators.required],
-        4: ['', Validators.required],
-        5: ['', Validators.required],
-        6: ['', Validators.required],
+        r1: ['', Validators.required],
+        r2: ['', Validators.required],
+        r3: ['', Validators.required],
+        r4: ['', Validators.required],
+        r5: ['', Validators.required],
+        r6: ['', Validators.required],
       }),
       readingTask2a: this.fb.group({
-        7: ['', Validators.required],
-        8: ['', Validators.required],
-        9: ['', Validators.required],
+        r7: ['', Validators.required],
+        r8: ['', Validators.required],
+        r9: ['', Validators.required],
       }),
       readingTask2b: this.fb.group({
-        10: ['', Validators.required],
-        11: ['', Validators.required],
-        12: ['', Validators.required],
+        r10: ['', Validators.required],
+        r11: ['', Validators.required],
+        r12: ['', Validators.required],
       }),
       readingTask3: this.fb.group({
-        13: ['', Validators.required],
-        14: ['', Validators.required],
-        15: ['', Validators.required],
-        16: ['', Validators.required],
-        17: ['', Validators.required],
-        18: ['', Validators.required],
-        19: ['', Validators.required],
+        r13: ['', Validators.required],
+        r14: ['', Validators.required],
+        r15: ['', Validators.required],
+        r16: ['', Validators.required],
+        r18: ['', Validators.required],
+        r19: ['', Validators.required],
+        r17: ['', Validators.required],
       }),
       readingTask4: this.fb.group({
-        20: ['', Validators.required],
-        21: ['', Validators.required],
-        22: ['', Validators.required],
-        23: ['', Validators.required],
-        24: ['', Validators.required],
-        25: ['', Validators.required],
-        26: ['', Validators.required],
+        r20: ['', Validators.required],
+        r21: ['', Validators.required],
+        r22: ['', Validators.required],
+        r23: ['', Validators.required],
+        r24: ['', Validators.required],
+        r25: ['', Validators.required],
+        r26: ['', Validators.required],
       }),
       readingTask5: this.fb.group({
-        27: ['', Validators.required],
-        28: ['', Validators.required],
-        29: ['', Validators.required],
-        30: ['', Validators.required],
+        r27: ['', Validators.required],
+        r28: ['', Validators.required],
+        r29: ['', Validators.required],
+        r30: ['', Validators.required],
       }),
       hearingTask1: this.fb.group({
-        1: ['', Validators.required],
-        2: ['', Validators.required],
-        3: ['', Validators.required],
-        4: ['', Validators.required],
-        5: ['', Validators.required],
-        6: ['', Validators.required],
-        7: ['', Validators.required],
-        8: ['', Validators.required],
-        9: ['', Validators.required],
-        10: ['', Validators.required],
+        h1: ['', Validators.required],
+        h2: ['', Validators.required],
+        h3: ['', Validators.required],
+        h4: ['', Validators.required],
+        h5: ['', Validators.required],
+        h6: ['', Validators.required],
+        h7: ['', Validators.required],
+        h8: ['', Validators.required],
+        h9: ['', Validators.required],
+        h10: ['', Validators.required],
       }),
       hearingTask2: this.fb.group({
-        11: ['', Validators.required],
-        12: ['', Validators.required],
-        13: ['', Validators.required],
-        14: ['', Validators.required],
-        15: ['', Validators.required],
+        h11: ['', Validators.required],
+        h12: ['', Validators.required],
+        h13: ['', Validators.required],
+        h14: ['', Validators.required],
+        h15: ['', Validators.required],
       }),
       hearingTask3: this.fb.group({
-        16: ['', Validators.required],
-        17: ['', Validators.required],
-        18: ['', Validators.required],
-        19: ['', Validators.required],
-        20: ['', Validators.required],
-        21: ['', Validators.required],
-        22: ['', Validators.required],
+        h16: ['', Validators.required],
+        h17: ['', Validators.required],
+        h18: ['', Validators.required],
+        h19: ['', Validators.required],
+        h20: ['', Validators.required],
+        h21: ['', Validators.required],
+        h22: ['', Validators.required],
       }),
       hearingTask4: this.fb.group({
-        23: ['', Validators.required],
-        24: ['', Validators.required],
-        25: ['', Validators.required],
-        26: ['', Validators.required],
-        27: ['', Validators.required],
-        28: ['', Validators.required],
-        29: ['', Validators.required],
-        30: ['', Validators.required],
+        h23: ['', Validators.required],
+        h24: ['', Validators.required],
+        h25: ['', Validators.required],
+        h26: ['', Validators.required],
+        h27: ['', Validators.required],
+        h28: ['', Validators.required],
+        h29: ['', Validators.required],
+        h30: ['', Validators.required],
       }),
     });
 
@@ -207,29 +193,30 @@ export class B1ExamComponent {
       )?.correctAnswer;
       this.chosenOptions().push(examplePoster || '');
     });
-  }
 
-  get readingTask4FormGroup() {
-    return this.answersForm.get('readingTask4') as FormGroup;
-  }
+    effect(
+      () => {
+        const attemptIsOpen =
+          this.b1ExamStore.getExamCatalogItemForSelectedExam()?.openAttempt;
+        const examCatalogItem =
+          this.b1ExamStore.getExamCatalogItemForSelectedExam();
+        const openAttemptForm = examCatalogItem?.lastAttemptAnswersForm;
 
-  @ViewChild('checkbox') checkbox!: ElementRef<HTMLInputElement>;
-  onCheckboxChange(
-    selectedOption: string,
-    questionNumber: number,
-    task: string
-  ) {
-    for (let i = 0; i < 3; i++) {
-      const id = task + questionNumber + i;
-      const checkbox = document.getElementById(id) as HTMLInputElement;
-      if (checkbox.value !== selectedOption) {
-        checkbox.checked = false;
-      }
-    }
+        if (openAttemptForm && attemptIsOpen) {
+          const { examId, ...answerForm } = openAttemptForm;
+          this.answersForm.patchValue(answerForm);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   submitAnswers() {
-    const attempt: B1AnswersForm = this.answersForm.value;
-    console.log(attempt);
+    const answersForm: B1AnswersForm = {
+      examId: this.exam()?.id || '',
+      ...this.answersForm.value,
+    };
+    console.log('answersForm', answersForm);
+    this.b1ExamStore.submitB1Exam(answersForm);
   }
 }

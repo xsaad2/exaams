@@ -11,6 +11,7 @@ import {
   PrismaService,
 } from '@com.language.exams/exaams-backend/utils';
 import { B1ExaamService } from '../b1-exam/b1-exaam.service';
+import { Answer } from '@prisma/client';
 
 @Injectable()
 export class B1AttemptService {
@@ -101,22 +102,28 @@ export class B1AttemptService {
       answers
     );
 
-    latestExamAttempt.answers.forEach((answer) => {
-      const newAnswerData = answersData.find(
-        (foundAnswer) =>
-          foundAnswer.taskName === answer.taskName &&
-          foundAnswer.itemNumber === answer.itemNumber
+    if (Array.isArray(latestExamAttempt.answers)) {
+      await Promise.all(
+        latestExamAttempt.answers.map((answer) => {
+          const newAnswerData = answersData.find(
+            (foundAnswer) =>
+              foundAnswer.taskName === answer.taskName &&
+              foundAnswer.itemNumber === answer.itemNumber
+          );
+          return this.prismaService.answer.update({
+            where: {
+              id: answer.id,
+            },
+            data: {
+              chosenAnswer: newAnswerData?.chosenAnswer,
+              isCorrect: newAnswerData?.isCorrect,
+            },
+          });
+        })
       );
-      this.prismaService.answer.update({
-        where: {
-          id: answer.id,
-        },
-        data: {
-          chosenAnswer: newAnswerData?.chosenAnswer,
-          isCorrect: newAnswerData?.isCorrect,
-        },
-      });
-    });
+    } else {
+      console.warn('No answers found for the latest exam attempt');
+    }
 
     return this.prismaService.b1ExamAttempt.update({
       where: { attemptId: latestExamAttempt.attemptId },
@@ -155,7 +162,7 @@ export class B1AttemptService {
           exam: true,
         },
       })
-      .then((attempts: any[]) => attempts[0]);
+      .then((attempts) => attempts[0]);
   }
 
   async getExaamAttemptsByUserEmail(userEmail: string) {
@@ -169,37 +176,46 @@ export class B1AttemptService {
     let score = 0;
     let nbrOfChosenAnswers = 0;
     let totalNumberOfQuestions = 0;
-
-    const answersData = Object.entries(answers)
-      .filter(([taskName]) => {
-        return taskName !== 'examId';
-      })
-      .flatMap(([taskName, taskAnswers]) =>
-        Object.entries(taskAnswers).map(([itemNumber, chosenAnswer]) => {
-          const itemNumberInt = parseInt(itemNumber);
-          console.log('itemNumberInt', itemNumberInt);
-          const correctAnswer = exam[taskName]?.questions.find(
-            (qst) => qst.questionNumber === itemNumberInt
-          )?.correctAnswer;
-
-          const isCorrect = correctAnswer === chosenAnswer;
-          if (isCorrect) ++score;
-          if (chosenAnswer) ++nbrOfChosenAnswers;
-          ++totalNumberOfQuestions;
-          return {
-            taskName,
-            itemNumber: itemNumberInt,
-            chosenAnswer,
-            isCorrect,
-          };
+    let answersData: Pick<
+      Answer,
+      'itemNumber' | 'isCorrect' | 'taskName' | 'chosenAnswer'
+    >[] = [];
+    try {
+      answersData = Object.entries(answers)
+        .filter(([taskName]) => {
+          return taskName !== 'examId';
         })
-      );
+        .flatMap(([taskName, taskAnswers]) =>
+          Object.entries(taskAnswers).map(([itemNumber, chosenAnswer]) => {
+            const itemNumberInt = itemNumber;
+            const correctAnswer = exam[taskName]?.questions.find((qst) => {
+              console.log('qst.questionNumber', qst.questionNumber);
+              console.log('itemNumberInt new', itemNumberInt.slice(1));
+              return String(qst.questionNumber) === itemNumberInt.slice(1);
+            })?.correctAnswer;
 
-    console.log('nbrOfChosenAnswers', nbrOfChosenAnswers);
-    console.log('totalNumberOfQuestions', totalNumberOfQuestions);
+            const isCorrect = correctAnswer === chosenAnswer;
+            if (isCorrect) ++score;
+            if (chosenAnswer) ++nbrOfChosenAnswers;
+            ++totalNumberOfQuestions;
+            return {
+              taskName,
+              itemNumber: itemNumberInt,
+              chosenAnswer: chosenAnswer,
+              isCorrect,
+            };
+          })
+        );
+    } catch (e) {
+      console.error('Error while calculating answers data', e);
+      throw new NotFoundException('Failed to calculate answers data', {
+        cause: e,
+      });
+    }
+
     const progress =
       totalNumberOfQuestions > 0
-        ? (nbrOfChosenAnswers / totalNumberOfQuestions) * 100
+        ? Math.round((nbrOfChosenAnswers / totalNumberOfQuestions) * 100)
         : 0;
 
     return { answersData, score, progress };

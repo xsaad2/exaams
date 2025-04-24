@@ -14,8 +14,10 @@ import { tapResponse } from '@ngrx/operators';
 import {
   ExamCatalogItem,
   B1ExamWithTasks,
+  B1AnswersForm,
 } from '@com.language.exams/exaams-backend/utils';
 import { Router } from '@angular/router';
+import { B1AttemptService } from '../services/b1-attempts.service';
 
 export interface B1ExamState {
   currentExam: B1ExamWithTasks | null;
@@ -28,7 +30,7 @@ const initialState: B1ExamState = {
   examsCatalog: [],
   isLoading: false,
 };
-1;
+
 export const B1ExamStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
@@ -38,27 +40,23 @@ export const B1ExamStore = signalStore(
     getCurrentExam: computed(() => store.currentExam()),
     getIsLoading: computed(() => store.isLoading()),
     getExamsCatalog: computed(() => store.examsCatalog()),
+    getExamCatalogItemForSelectedExam: computed(() => {
+      return store
+        .examsCatalog()
+        .find((exam) => exam.id === store.currentExam()?.id);
+    }),
   })),
   withMethods(
-    (store, examService = inject(B1ExamService), router = inject(Router)) => ({
+    (
+      store,
+      examService = inject(B1ExamService),
+      attemptService = inject(B1AttemptService),
+      router = inject(Router)
+    ) => ({
       loadExamsCatalog: rxMethod<void>(
         pipe(
           switchMap(() => {
-            patchState(store, { isLoading: true });
-            return examService.getB1ExamsCatalog().pipe(
-              tapResponse(
-                (examsCatalog) => {
-                  patchState(store, {
-                    examsCatalog: examsCatalog,
-                    isLoading: false,
-                  });
-                  console.log('ExamsCatalog loaded', examsCatalog);
-                },
-                () => {
-                  patchState(store, { isLoading: false });
-                }
-              )
-            );
+            return loadExamCatalog(store, examService);
           })
         )
       ),
@@ -75,21 +73,61 @@ export const B1ExamStore = signalStore(
                 (error) => {
                   console.log('Error loading exam', error);
                   patchState(store, { isLoading: false });
-                  router.navigate(['/exams/dashboard']);
                 }
               )
             );
           })
         )
       ),
+      submitB1Exam: rxMethod<B1AnswersForm>(
+        pipe(
+          switchMap((answersForm) => {
+            patchState(store, { isLoading: true });
+            return attemptService.createB1ExamAttempt(answersForm).pipe(
+              tapResponse(
+                (response) => {
+                  console.log('Exam submitted', response);
+                  router.navigate(['/dashboard']);
+                  patchState(store, { isLoading: false });
+                },
+                (error) => {
+                  console.log('Error submitting exam', error);
+                  patchState(store, { isLoading: false });
+                }
+              )
+            );
+          }),
+          switchMap(() => {
+            return loadExamCatalog(store, examService);
+          })
+        )
+      ),
     })
   ),
   withHooks({
-    onInit({ loadExamsCatalog }) {
-      loadExamsCatalog();
+    onInit(store) {
+      store.loadExamsCatalog();
     },
     onDestroy() {
       console.log('in B1ExamStore Destroy');
     },
   })
 );
+
+function loadExamCatalog(store: any, examService: B1ExamService) {
+  patchState(store, { isLoading: true });
+  return examService.getB1ExamsCatalog().pipe(
+    tapResponse(
+      (examsCatalog) => {
+        patchState(store, {
+          examsCatalog: examsCatalog,
+          isLoading: false,
+        });
+        console.log('ExamsCatalog loaded', examsCatalog);
+      },
+      () => {
+        patchState(store, { isLoading: false });
+      }
+    )
+  );
+}

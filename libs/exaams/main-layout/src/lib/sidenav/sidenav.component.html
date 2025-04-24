@@ -10,7 +10,7 @@
 </div>
 <div class="flex flex-row gap-2">
   <div (mouseenter)="openSideNav()" (mouseleave)="closeSideNav()"
-       class="hidden md:fixed bg-white md:flex flex-col space-y-1 px-2 h-screen border-r border-gray-200 transition-all mt-[65px] duration-200 ease-in-out "
+       class="hidden md:fixed bg-white md:flex flex-col space-y-1 px-2 h-screen border-r border-gray-200 transition-all mt-[65px] duration-200 ease-in-out z-50"
       [ngClass]="{
         'w-64': isOpen(),
         'w-16 ': !isOpen()
@@ -32,7 +32,9 @@
     }
   </div>
 
-  <div class="flex md:hidden flex-row justify-between bg-white items-center fixed w-full bottom-0">
+
+
+  <div class="flex md:hidden flex-row justify-between bg-white items-center fixed w-full bottom-0 z-50">
     @for (element of  sideNavElements; track element.label) {
       <div (click)="onSelectSidenavElement(element)"
            class="flex w-full shadow-2xl flex-col items-center justify-center rounded h-fit p-2 "
@@ -45,8 +47,6 @@
       </div>
     }
   </div>
-
-    <ng-content ></ng-content>
-
+  <ng-content ></ng-content>
 </div>
 

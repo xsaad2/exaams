@@ -1,12 +1,13 @@
-import {Component, effect, input, signal} from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {Question} from "@com.language.exams/exaams-backend/utils";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Question } from '@com.language.exams/exaams-backend/utils';
+import { ALPHABETS } from '@com.language.exams/shared/utils';
 
 export type BinaryQuestion = {
   question: Question;
   correctAnswer: string;
-}
+};
 
 @Component({
   selector: 'lib-binary-question',
@@ -17,47 +18,33 @@ export type BinaryQuestion = {
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: BinaryQuestionComponent
-    }
-  ]
+      useExisting: BinaryQuestionComponent,
+    },
+  ],
 })
-export class BinaryQuestionComponent implements ControlValueAccessor{
-  btnsLabels = input.required<string[] | undefined>();
+export class BinaryQuestionComponent implements ControlValueAccessor {
+  useAlphabetLabels = input(false);
   chosenOption = input<string>('');
-  isDisabled = input<boolean>(false);
-  value = signal<string>('');
+  choices = input.required<string[]>();
+  name = input.required<string>();
+  isChecked = input<boolean>(false);
+  disabled = input<boolean>(false);
 
-  disabled =false;
+  checked = this.isChecked();
 
-  question = input<Question>();
-  clicked = signal<boolean>(false);
+  isDisabled = computed(() => {
+    return this.disabled();
+  });
 
-  constructor() {
-    effect(() => {
-      if(this.question()?.questionNumber === 0) {
-        this.clicked.set(true)
-        this.value.set(this.question()?.correctAnswer || '');
-      }
-    }, {allowSignalWrites: true})
-  }
-
-  onChooseElement(label: string) {
-    this.value.set(label);
-    this.clicked.set(!this.clicked())
-    this.onChange(this.value());
-  }
-  onSecondElement() {
-    this.value.set(this.btnsLabels()?.[1] || '');
-    this.clicked.set(!this.clicked())
-    this.onChange(this.value());
-  }
+  value = '';
 
   onChange = (value: string) => {
+    this.value = value;
   };
-  onTouched: () => void = () => {
-  };
+
+  onTouched: () => void = () => {};
   writeValue(value: string): void {
-    this.value.set(value);
+    this.value = value;
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -65,7 +52,11 @@ export class BinaryQuestionComponent implements ControlValueAccessor{
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
-  setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+
+  handleInputChange(value: string): void {
+    this.onChange(value);
+    this.onTouched();
   }
+
+  protected readonly ALPHABETS = ALPHABETS;
 }
