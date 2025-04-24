@@ -1,4 +1,6 @@
 @if (exam() !== null) {
+
+
   <div
     class="flex flex-col justify-center p-5 py-5 gap-5 h-full max-w-screen-xl mx-auto"
   >
@@ -43,7 +45,7 @@
                 <p class="mb-5">
                   <b>{{ question.questionNumber }}.</b> {{ question.statement }}
                 </p>
-                <select [formControlName]="i" class="justify-self-end">
+                <select [formControlName]="'r'+i" class="justify-self-end">
                   <option value="" selected disabled hidden>
                     --Option auswählen--
                   </option>
@@ -104,28 +106,14 @@
                   </p>
                 </div>
                 <div class="flex flex-col justify-start">
-                  @for (option of question.options; track option; let j = $index; let
-                      k = $count) {
 
-                    <atomic-input
-                      id="{{ 'reafingTask2a' + question.questionNumber + j }}"
-                      (change)="
-                onCheckboxChange(
-                  option,
-                  question.questionNumber,
-                  'reafingTask2a'
-                )
-              "
-                      [formControlName]="question.questionNumber"
-                      type="checkbox"
-                      [checkBoxValue]="option"
+                    <atomic-radio-input
+                      [name]="'r'+question.questionNumber + ''"
+                      [options]="question.options"
+                      [formControlName]="'r'+question.questionNumber"
                     >
-                      <p *ngIf="j === 0"><b> a. </b></p>
-                      <p *ngIf="j === 1"><b> b. </b></p>
-                      <p *ngIf="j === 2"><b> c. </b></p>
-                      {{ option }}
-                    </atomic-input>
-                  }
+                    </atomic-radio-input>
+
                 </div>
               </div>
             </div>
@@ -141,7 +129,6 @@
         <lib-b1-exam-task-content
           [readingTask]="exam()?.readingTask2b"
         ></lib-b1-exam-task-content>
-        <!--questions-->
         @for (question of exam()?.readingTask2b?.questions; track question.id; let
             i = $index) {
           @if (question.questionNumber === 0) {
@@ -188,36 +175,11 @@
                   </p>
                 </div>
                 <div class="flex flex-col justify-start">
-                  @for (option of question.options; track option; let j = $index; let
-                      k = $count) {
-
-                    <atomic-input
-                      id="{{ 'readingTask2b' + question.questionNumber + j }}"
-                      (change)="
-                onCheckboxChange(
-                  option,
-                  question.questionNumber,
-                  'readingTask2b'
-                )
-              "
-                      [formControlName]="question.questionNumber"
-                      type="checkbox"
-                      [checkBoxValue]="option"
-                    >
-                      @switch (j) {
-                        @case (0) {
-                          <p><b> a. </b></p>
-                        }
-                        @case (1) {
-                          <p><b> b. </b></p>
-                        }
-                        @case (2) {
-                          <p><b> c. </b></p>
-                        }
-                      }
-                      {{ option }}
-                    </atomic-input>
-                  }
+                  <atomic-radio-input
+                    [name]="'r'+question.questionNumber + ''"
+                    [options]="question.options"
+                    [formControlName]="'r'+question.questionNumber"
+                  ></atomic-radio-input>
                 </div>
               </div>
             </div>
@@ -254,7 +216,7 @@
                 <b>{{ question.questionNumber }}.</b> {{ question.statement }}
               </p>
               <select
-                [formControlName]="question.questionNumber"
+                [formControlName]="'r'+question.questionNumber"
                 class="justify-self-end"
               >
                 <option value="" selected disabled hidden>
@@ -307,8 +269,10 @@
                 <div class="flex flex-row justify-between">
                   <p>
                     <b>{{ question.questionNumber }}.</b> {{ question.questionText }}
-                  </p>
-                  <lib-yes-no [question]="question"></lib-yes-no>
+                  </p><lib-binary-question
+                  [chosenOption]="question.correctAnswer"
+                  [choices]="question.options"
+                  [name]="'r'+question.questionNumber+''"></lib-binary-question>
                 </div>
               </lib-task-example-container>
             </div>
@@ -322,10 +286,11 @@
                 <p>
                   <b>{{ question.questionNumber }}.</b> {{ question.questionText }}
                 </p>
-                <lib-yes-no
-                  [formControlName]="question.questionNumber"
-                  [question]="question"
-                ></lib-yes-no>
+                <lib-binary-question
+                  [formControlName]="'r'+question.questionNumber"
+                  [choices]="question.options"
+                  [name]="'r'+question.questionNumber">
+                </lib-binary-question>
               </div>
             }
           }
@@ -371,36 +336,13 @@
                 </p>
               </div>
               <div class="flex flex-col justify-start">
-                @for (option of question.options; track option; let j = $index; let
-                    k = $count) {
+                <atomic-radio-input
+                  [name]="'r'+question.questionNumber + ''"
+                  [options]="question.options"
+                  [formControlName]="'r'+question.questionNumber"
+                >
+                </atomic-radio-input>
 
-                  <atomic-input
-                    id="{{ 'readingTask5' + question.questionNumber + j }}"
-                    (change)="
-                onCheckboxChange(
-                  option,
-                  question.questionNumber,
-                  'readingTask5'
-                )
-              "
-                    [formControlName]="question.questionNumber"
-                    type="checkbox"
-                    [checkBoxValue]="option"
-                  >
-                    @switch (j) {
-                      @case (0) {
-                        <p><b> a. </b></p>
-                      }
-                      @case (1) {
-                        <p><b> b. </b></p>
-                      }
-                      @case (2) {
-                        <p><b> c. </b></p>
-                      }
-                    }
-                    {{ option }}
-                  </atomic-input>
-                }
               </div>
             </div>
           }
@@ -428,9 +370,8 @@
                 <p class="font-bold mb-4">01. {{ element.first.statement }}</p>
                 <lib-binary-question
                   [chosenOption]="element.first.correctAnswer"
-                  [isDisabled]="true"
-                  [btnsLabels]="element.first.options"
-                ></lib-binary-question>
+                  [choices]="element.first.options"
+                  [name]="element.first.questionNumber+''"></lib-binary-question>
               </div>
               <div class="rows-2 mt-4 md:grid grid-cols-2">
                 <div class="">
@@ -465,9 +406,9 @@
                 {{ element.first.questionNumber }}. {{ element.first.statement }}
               </p>
               <lib-binary-question
-                [formControlName]="element.first.questionNumber"
-                [btnsLabels]="element.first.options"
-              ></lib-binary-question>
+                [formControlName]="'h'+element.first.questionNumber"
+                [choices]="element.first.options"
+                [name]="'h'+element.first.questionNumber+''"></lib-binary-question>
             </div>
             <div class="rows-2 mt-4 md:grid grid-cols-2">
               <div class="">
@@ -476,35 +417,12 @@
                 </p>
               </div>
               <div class="flex flex-col justify-start">
-                @for (option of element.second.options; track option; let j = $index;
-                  ) {
-                  <atomic-input
-                    id="{{ 'hearinTask1' + element.second.questionNumber + j }}"
-                    (change)="
-              onCheckboxChange(
-                option,
-                element.second.questionNumber,
-                'hearinTask1'
-              )
-            "
-                    [formControlName]="element.second.questionNumber"
-                    type="checkbox"
-                    [checkBoxValue]="option"
-                  >
-                    @switch (j) {
-                      @case (0) {
-                        <p><b> a. </b></p>
-                      }
-                      @case (1) {
-                        <p><b> b. </b></p>
-                      }
-                      @case (2) {
-                        <p><b> c. </b></p>
-                      }
-                    }
-                    {{ option }}
-                  </atomic-input>
-                }
+                <atomic-radio-input
+                  [name]="'h'+element.second.questionNumber + ''"
+                  [options]="element.second.options"
+                  [formControlName]="'h'+element.second.questionNumber"
+                >
+                </atomic-radio-input>
               </div>
             </div>
           }
@@ -519,6 +437,7 @@
         <lib-b1-exam-task-content
           [hearingTask]="exam()?.hearingTask2"
         ></lib-b1-exam-task-content>
+
         @for (question of exam()?.hearingTask2?.questions; track question.id) {
           <div class="rows-2 md:grid md:grid-cols-2 my-10">
             <div class="flex flex-row mb-2">
@@ -526,30 +445,16 @@
               {{ question.statement }}
             </div>
             <div class="flex flex-col justify-start">
-              @for (option of question.options; track option; let j = $index) {
-                <atomic-input
-                  id="{{ 'hearingTask2' + question.questionNumber + j }}"
-                  (change)="
-              onCheckboxChange(option, question.questionNumber, 'hearingTask2')
-            "
-                  [formControlName]="question.questionNumber"
-                  type="checkbox"
-                  [checkBoxValue]="option"
-                >
-                  @switch (j) {
-                    @case (0) {
-                      <p><b> a. </b></p>
-                    }
-                    @case (1) {
-                      <p><b> b. </b></p>
-                    }
-                    @case (2) {
-                      <p><b> c. </b></p>
-                    }
-                  }
-                  {{ option }}
-                </atomic-input>
-              }
+              <atomic-radio-input
+                [name]="'h'+question.questionNumber"
+                [options]="question.options"
+                [formControlName]="'h'+question.questionNumber"
+              >
+                <!--                      <p *ngIf="j === 0"><b> a. </b></p>-->
+                <!--                      <p *ngIf="j === 1"><b> b. </b></p>-->
+                <!--                      <p *ngIf="j === 2"><b> c. </b></p>-->
+                <!--                      {{ option }}-->
+              </atomic-radio-input>
             </div>
           </div>
         }
@@ -570,9 +475,9 @@
               {{ question.statement }}
             </div>
             <lib-binary-question
-              [formControlName]="question.questionNumber"
-              [btnsLabels]="question.options"
-            ></lib-binary-question>
+              [formControlName]="'h'+question.questionNumber"
+              [choices]="question.options"
+              [name]="'h'+question.questionNumber+''"></lib-binary-question>
           </div>
         }
       </section>
@@ -595,32 +500,38 @@
                   <p>
                     <b>{{ question.questionNumber }}.</b> {{ question.statement }}
                   </p>
-                  <atomic-checkbox-choice
-                    [isDisabled]="true"
-                    [question]="question"
-                    [useAlphabetLabels]="true"
-                  ></atomic-checkbox-choice>
+                  <lib-binary-question
+                    [chosenOption]="question.correctAnswer"
+                    [choices]="question.options"
+                    [name]="'h'+question.questionNumber+''"></lib-binary-question>
                 </div>
               </div>
             </lib-task-example-container>
           } @else {
-            <div class="rows-2 w-full my-4 md:grid grid-cols-3 md:gap-10 mt-8">
-              <div class="flex flex-row mb-2 col-span-2">
-                <p class="font-bold mr-1">{{ question.questionNumber }}.</p>
-                {{ question.statement }}
+            <div class="md:rows-2 mt-8">
+              <div
+                class="flex gap-2 flex-col md:flex-row justify-between mb-2 col-span-2"
+              >
+                <p>
+                  <b>{{ question.questionNumber }}.</b> {{ question.statement }}
+                </p>
+                <lib-binary-question
+                  formControlName="{{'h'+question.questionNumber}}"
+                  [choices]="question.options"
+                  [name]="'h'+question.questionNumber+''"></lib-binary-question>
               </div>
-              <atomic-checkbox-choice
-                [question]="question"
-                [formControlName]="question.questionNumber"
-                [useAlphabetLabels]="true"
-              ></atomic-checkbox-choice>
             </div>
           }
         }
       </section>
 
       <section id="submit" class="flex justify-center mt-10">
-        <atomic-button (click)="submitAnswers()">Schicken</atomic-button>
+        <atomic-button (click)="submitAnswers()">
+          @if (isLoading()){
+            <atomic-icon class="pt-1 mr-2" iconName="progress_activity" animation="spin" ></atomic-icon>
+          }
+          <span>Schicken</span>
+        </atomic-button>
       </section>
     </form>
   </div>

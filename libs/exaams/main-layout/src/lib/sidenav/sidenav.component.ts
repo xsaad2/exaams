@@ -56,7 +56,7 @@ export class SidenavComponent {
 
   constructor() {
     this.route.url.subscribe((url) => {
-      const currentUrl = url[0].path;
+      const currentUrl = url[0]?.path;
       const selectedElement = this.sideNavElements.find(
         (element) => element.link === `/${currentUrl}`
       );

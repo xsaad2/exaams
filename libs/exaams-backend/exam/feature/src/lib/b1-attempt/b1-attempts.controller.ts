@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { B1AttemptService } from './b1-attempt.service';
 import { B1AnswersForm } from '@com.language.exams/exaams-backend/utils';
 
@@ -8,6 +8,7 @@ export class B1AttemptsController {
 
   @Post()
   async createOrUpdateB1Attempt(@Body() formAnswers: B1AnswersForm) {
+    console.log('formAnswers', formAnswers);
     try {
       return await this.b1AttemptService.createOrUpdateExamAttempt(
         'saad.belkhou@gmail.com',
@@ -22,7 +23,6 @@ export class B1AttemptsController {
 
   @Post('restart')
   async startNewB1Attempt(@Body() formAnswers: B1AnswersForm) {
-    console.log('createB1Attempt');
     try {
       return await this.b1AttemptService.createExamAttempt(
         'saad.belkhou@gmail.com',
@@ -37,7 +37,6 @@ export class B1AttemptsController {
 
   @Get()
   async getB1ExamAttempts() {
-    console.log('getExamAttempts');
     try {
       return await this.b1AttemptService.getExamAttempts();
     } catch (e) {
@@ -48,11 +47,26 @@ export class B1AttemptsController {
 
   @Get('latest')
   async getLatestExamAttempt(@Body() body: any) {
-    console.log('getLatestExamAttempt', body);
     try {
       return await this.b1AttemptService.getLatestExamAttemptByExamIdAndUserEmail(
         body.examId,
         body.userEmail
+      );
+    } catch (e) {
+      console.error('Error while getting Latest Exam Attempt', e);
+      return e;
+    }
+  }
+  @Get('latest/:examId/:userEmail')
+  async getLatestExamAttemptByExamIdAndUserEmail(
+    @Body() body: any,
+    @Param('examId') examId: string,
+    @Param('userEmail') userEmail: string
+  ) {
+    try {
+      return await this.b1AttemptService.getLatestExamAttemptByExamIdAndUserEmail(
+        'cm9o1pdir0000blisuz2tp44a',
+        'saad.belkhou@gmail.com'
       );
     } catch (e) {
       console.error('Error while getting Latest Exam Attempt', e);

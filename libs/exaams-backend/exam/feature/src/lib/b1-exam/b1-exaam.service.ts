@@ -1,8 +1,9 @@
 import {
+  B1AnswersForm,
   executePromise,
   PrismaService,
   ReadingTaskFiles,
-} from '../../../../../utils/src';
+} from '@com.language.exams/exaams-backend/utils';
 import {
   forwardRef,
   Inject,
@@ -13,7 +14,7 @@ import { Client } from 'minio';
 
 import { Express } from 'express';
 import { B1ExamAttempt } from '@prisma/client';
-import { ExamCatalogItem } from '../../../../../utils/src/lib/types/exam-catalog.types';
+import { ExamCatalogItem } from '@com.language.exams/exaams-backend/utils';
 import { B1AttemptService } from '../b1-attempt/b1-attempt.service';
 // This is a hack to make Multer available in the Express namespace
 
@@ -355,52 +356,68 @@ export class B1ExaamService {
       );
     }
 
-    const [attempts, attemptsError] = await executePromise(
-      this.prismaService.b1ExamAttempt.findMany()
-    );
-
-    if (attemptsError || !attempts) {
-      console.warn('Error while getting Exams Attempts', attemptsError);
-      throw new InternalServerErrorException(
-        'Error while getting Exams Attempts',
-        {
-          cause: attemptsError,
-        }
-      );
-    }
     const result: ExamCatalogItem[] = [];
 
-    exams.forEach((exam) => {
-      const attemptsForExam = attempts.filter(
-        (attempt) => attempt.examId === exam.id
+    for (const exam of exams) {
+      const [lastExamAttempt, attemptError] = await executePromise(
+        this.prismaService.b1ExamAttempt.findMany({
+          where: {
+            examId: exam.id,
+          },
+          orderBy: {
+            updatedAt: 'desc',
+          },
+          take: 1,
+          include: {
+            answers: true,
+          },
+        })
       );
 
-      let lastAttemptByDate = null;
-
-      if (attemptsForExam.length > 0) {
-        lastAttemptByDate = attemptsForExam.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )[0];
+      if (attemptError) {
+        console.warn('Error while getting Latest Exam Attempt', attemptError);
+        throw new InternalServerErrorException(
+          'Error while getting Latest Exam Attempt',
+          {
+            cause: attemptError,
+          }
+        );
       }
-      console.log(
-        'lastAttemptByDate?.isCompleted',
-        lastAttemptByDate?.isCompleted
-      );
+
+      const answersForm: B1AnswersForm = {
+        examId: exam.id,
+        readingTask1: {},
+        readingTask2a: {},
+        readingTask2b: {},
+        readingTask3: {},
+        readingTask4: {},
+        hearingTask1: {},
+        hearingTask2: {},
+        hearingTask3: {},
+        hearingTask4: {},
+      };
+
+      lastExamAttempt[0]?.answers.forEach((answer) => {
+        if (!answersForm[answer.taskName]) {
+          answersForm[answer.taskName] = {};
+        }
+        answersForm[answer.taskName][answer.itemNumber] = answer.chosenAnswer;
+      });
 
       const catalogItem: ExamCatalogItem = {
         id: exam.id,
         name: exam.name,
-        attemptsCount: attemptsForExam.length,
+        attemptsCount: lastExamAttempt.length,
         level: 'B1',
-        lastScore: lastAttemptByDate?.score || null,
-        lastAttemptDate: lastAttemptByDate?.updatedAt || null,
-        progress: lastAttemptByDate?.progress || null,
-        openAttempt: lastAttemptByDate?.isCompleted === false,
+        lastScore: lastExamAttempt[0]?.score,
+        lastAttemptDate: lastExamAttempt[0]?.updatedAt,
+        progress: lastExamAttempt[0]?.progress,
+        openAttempt: lastExamAttempt[0]?.isCompleted === false,
+        lastAttemptAnswersForm: answersForm || null,
       };
 
       result.push(catalogItem);
-    });
+    }
 
     return result;
   }

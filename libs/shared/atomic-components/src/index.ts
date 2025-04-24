@@ -7,3 +7,4 @@ export * from './lib/atomic-dropdown/atomic-dropdown.component';
 export * from './lib/click-away.directive';
 export * from './lib/atomic-timer/atomic-timer.component';
 export * from './lib/atomic-progress-bar/atomic-progress-bar.component';
+export * from './lib/atomic-radio-input/atomic-radio-input.component';

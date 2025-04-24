@@ -8,6 +8,7 @@ import {
 } from '@com.language.exams/shared/atomic-components';
 import { Router } from '@angular/router';
 import { B1ExamStore } from '@com.language.exams/exaams/exaam/data-access';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'lib-exam-card',
@@ -30,6 +31,9 @@ export class ExamCardComponent {
     this.router.navigate([`/b1/${this.exam()?.id}`]);
   }
 
+  date = computed(() => {
+    return format(this.exam().lastAttemptDate, 'dd MMMM yyyy, HH:mm');
+  });
   buttonLabel = computed(() => {
     if (this.exam().openAttempt) {
       return 'Continue';

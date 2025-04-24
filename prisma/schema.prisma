@@ -133,7 +133,7 @@ model B1ExamAttempt {
 model Answer {
   id           String        @id @default(cuid())
   taskName     String
-  itemNumber   Int // The question/item number within the task (e.g., "1", "7", "23") - String to accommodate potential non-numeric keys
+  itemNumber   String // The question/item number within the task (e.g., "1", "7", "23") - String to accommodate potential non-numeric keys
   chosenAnswer String? // The actual answer provided (nullable if answers can be skipped)
   isCorrect    Boolean?
   attemptId    String
