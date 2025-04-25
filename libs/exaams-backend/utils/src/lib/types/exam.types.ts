@@ -17,6 +17,7 @@ export type B1ExamWithTasks = {
   id: string;
   name: string;
   readingTask3ImageUrls?: string;
+  audioTrackUrl: string;
   readingTask1: ReadingTask;
   readingTask2a: ReadingTask;
   readingTask2b: ReadingTask;

@@ -2,8 +2,9 @@
 
 
   <div
-    class="flex flex-col justify-center p-5 py-5 gap-5 h-full max-w-screen-xl mx-auto"
+    class="flex flex-col justify-center p-5 py-5 gap-5 h-full max-w-screen-xl mx-auto select-none"
   >
+
     <form [formGroup]="answersForm">
       <h2
         class="text-4xl text-center font-semibold bg-primary-light border-gray-500 rounded-md p-10 mb-10"
@@ -354,7 +355,9 @@
       >
         Hören
       </h1>
-
+      <div>
+        <atomic-audio-reader [audioLink]="exam()?.audioTrackUrl || '' "></atomic-audio-reader>
+      </div>
       <section
         id="horenTeil1"
         formGroupName="hearingTask1"

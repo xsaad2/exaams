@@ -1,0 +1,30 @@
+<!--<style>-->
+<!--  .audio-reader-container {-->
+<!--    display: flex;-->
+<!--    justify-content: center;-->
+<!--    align-items: center;-->
+<!--    padding: 16px;-->
+<!--    background-color: #f9f9f9;-->
+<!--    border: 1px solid #ddd;-->
+<!--    border-radius: 8px;-->
+<!--    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);-->
+<!--  }-->
+
+<!--  audio {-->
+<!--    width: 100%;-->
+<!--    max-width: 400px;-->
+<!--    outline: none;-->
+<!--  }-->
+<!--</style>-->
+<div class="w-full">
+<div class="flex flex-col justify-center items-center p-4 w-full">
+  <audio #audio >
+    <source [src]="audioLink()" type="audio/ogg">
+    Your browser does not support the audio element.
+  </audio>
+  <div class="flex flex-row gap-4 justify-center items-center mt-4">
+    <button class="bg-black text-white hover:cursor-pointer hover:bg-white hover:text-black font-bold  p-2 border-2 border-black min-w-[50px] rounded-md " (click)="playAudio()">{{ playLabel() }}</button>
+    <button class="bg-black text-white hover:cursor-pointer hover:bg-white hover:text-black font-bold  p-2 border-2 border-black min-w-[50px] rounded-md " (click)="pauseAudio()">Pause</button>
+  </div>
+</div>
+</div>

@@ -12,8 +12,8 @@ import {
 } from '@com.language.exams/exaams-backend/utils';
 import { B1ExamStore } from '@com.language.exams/exaams/exaam/data-access';
 import {
+  AtomicAudioReaderComponent,
   AtomicButtonComponent,
-  AtomicCheckboxChoiceComponent,
   AtomicIconComponent,
   AtomicInputComponent,
   AtomicRadioInputComponent,
@@ -45,6 +45,7 @@ export type HearingTask1Element = {
     AdPosterComponent,
     AtomicIconComponent,
     AtomicRadioInputComponent,
+    AtomicAudioReaderComponent,
   ],
   templateUrl: './b1-exam.component.html',
 })
@@ -53,6 +54,7 @@ export class B1ExamComponent {
   private b1ExamStore = inject(B1ExamStore);
 
   isLoading = computed(() => this.b1ExamStore.isLoading());
+
   protected exam = computed(() => {
     return this.b1ExamStore.getCurrentExam();
   });
