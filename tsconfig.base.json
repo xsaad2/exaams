@@ -27,6 +27,12 @@
       "@com.language.exams/exaams/auth/data-access": [
         "libs/exaams/auth/data-access/src/index.ts"
       ],
+      "@com.language.exams/exaams/auth/feature": [
+        "libs/exaams/auth/feature/src/index.ts"
+      ],
+      "@com.language.exams/exaams/auth/utils": [
+        "libs/exaams/auth/utils/src/index.ts"
+      ],
       "@com.language.exams/exaams/exaam/data-access": [
         "libs/exaams/exaam/data-access/src/index.ts"
       ],

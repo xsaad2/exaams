@@ -1,0 +1,6 @@
+<div class="flex flex-row items-center justify-start gap-2" [ngClass]="alertClasses()">
+  @if (iconName()) {
+    <atomic-icon iconName="{{iconName()}}"></atomic-icon>
+  }
+  <ng-content></ng-content>
+</div>

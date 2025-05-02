@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, effect, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AtomicIconComponent } from '../atomic-icon/atomic-icon.component';
 
@@ -14,7 +14,9 @@ export type ButtonColors =
   | 'secondary-dark'
   | 'warn-light'
   | 'warn-dark'
-  | 'transparent';
+  | 'transparent'
+  | 'white'
+  | 'black';
 
 @Component({
   selector: 'atomic-button',
@@ -25,10 +27,18 @@ export type ButtonColors =
 export class AtomicButtonComponent {
   type = input<BtnType>('button');
   animation = input<Animation>('');
-  color = input<ButtonColors>('primary');
+  color = input<ButtonColors>('black');
+  disabled = input<boolean>(false);
 
-  get ButtonColor() {
+  buttonColor = computed(() => {
+    if (this.disabled()) {
+      return 'bg-gray-400 text-gray-700 cursor-not-allowed';
+    }
     switch (this.color()) {
+      case 'white':
+        return 'text-black bg-white hover:text-white hover:bg-black';
+      case 'black':
+        return 'text-white bg-black hover:text-white hover:bg-primary';
       case 'primary':
         return 'text-white bg-primary hover:text-white hover:bg-black';
       case 'transparent':
@@ -36,5 +46,5 @@ export class AtomicButtonComponent {
       default:
         return 'bg-primary text-white';
     }
-  }
+  });
 }

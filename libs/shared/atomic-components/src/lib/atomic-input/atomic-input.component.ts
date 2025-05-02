@@ -4,8 +4,23 @@ import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-type InputType = 'textarea'|'checkbox' | 'radio' |'text'| 'password' |  'email'| 'number' | 'tel' | 'url'  | 'search' | 'date' | 'time' | 'datetime-local' | 'month' | 'week' | 'color';
-
+type InputType =
+  | 'textarea'
+  | 'checkbox'
+  | 'radio'
+  | 'text'
+  | 'password'
+  | 'email'
+  | 'number'
+  | 'tel'
+  | 'url'
+  | 'search'
+  | 'date'
+  | 'time'
+  | 'datetime-local'
+  | 'month'
+  | 'week'
+  | 'color';
 
 @Component({
   selector: 'atomic-input',
@@ -16,9 +31,9 @@ type InputType = 'textarea'|'checkbox' | 'radio' |'text'| 'password' |  'email'|
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: AtomicInputComponent
-    }
-  ]
+      useExisting: AtomicInputComponent,
+    },
+  ],
 })
 export class AtomicInputComponent implements ControlValueAccessor {
   public label = input<string>('');
@@ -34,10 +49,8 @@ export class AtomicInputComponent implements ControlValueAccessor {
 
   public value = '';
 
-  onChange = (value: string) => {
-  };
-  onTouched: () => void = () => {
-  };
+  onChange = (value: string) => {};
+  onTouched: () => void = () => {};
 
   writeValue(value: string): void {
     this.value = value;
@@ -52,16 +65,12 @@ export class AtomicInputComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  setDisabledState(isDisabled: boolean): void {
-    // this.isDisabled = isDisabled;
-  }
-
   handleInputChange(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.value = target.value;
     this.onChange(this.value);
     this.onTouched();
-    if(this.type() === 'checkbox'){
+    if (this.type() === 'checkbox') {
       this.value = this.checkBoxValue();
     }
   }
@@ -72,4 +81,3 @@ export class AtomicInputComponent implements ControlValueAccessor {
     this.onTouched();
   }
 }
-

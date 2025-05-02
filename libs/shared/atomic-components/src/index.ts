@@ -9,3 +9,4 @@ export * from './lib/atomic-timer/atomic-timer.component';
 export * from './lib/atomic-progress-bar/atomic-progress-bar.component';
 export * from './lib/atomic-radio-input/atomic-radio-input.component';
 export * from './lib/atomic-audio-reader/atomic-audio-reader.component';
+export * from './lib/atomic-alert/atomic-alert.component';

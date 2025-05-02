@@ -86,10 +86,11 @@
       }"
     />
   }
-  <p
-    *ngIf="isInvalid() && errorMessage()"
-    class="mt-1 text-sm text-red-500 dark:text-red-400"
-  >
-    {{ errorMessage() }}
-  </p>
+  @if(isInvalid() && errorMessage() ){
+    <p
+      class="mt-1 text-sm text-red-500 dark:text-red-400"
+    >
+      {{ errorMessage() }}
+    </p>
+  }
 </div>
