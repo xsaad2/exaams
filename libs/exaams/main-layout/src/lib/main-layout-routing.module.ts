@@ -8,7 +8,6 @@ const routes: Routes = [
     path: '',
     loadComponent: () =>
       import('./landing/landing.component').then((c) => c.LandingComponent),
-    canActivate: [],
   },
   {
     path: 'auth',

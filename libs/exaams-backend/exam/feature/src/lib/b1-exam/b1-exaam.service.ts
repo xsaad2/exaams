@@ -341,7 +341,7 @@ export class B1ExaamService {
     }
   }
 
-  async getExamsCatalog() {
+  async getExamsCatalog(email: string) {
     const [exams, examsError] = await executePromise(
       this.prismaService.b1Exam.findMany()
     );
@@ -362,6 +362,9 @@ export class B1ExaamService {
       const [lastExamAttempt, attemptError] = await executePromise(
         this.prismaService.b1ExamAttempt.findMany({
           where: {
+            user: {
+              email: email,
+            },
             examId: exam.id,
           },
           orderBy: {
