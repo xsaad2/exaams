@@ -91,6 +91,7 @@ export class LoginComponent {
         this.loginForm.value.email,
         this.loginForm.value.password
       )
+      .then(() => this.router.navigate(['/dashboard']))
       .catch((e) => {
         console.log(e);
         const readableError = getReadableFirebaseError(e.code);

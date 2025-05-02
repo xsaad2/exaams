@@ -1,17 +1,21 @@
 import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { B1AttemptService } from './b1-attempt.service';
 import { B1AnswersForm } from '@com.language.exams/exaams-backend/utils';
+import { DbUser } from '@com.language.exams/exaams-backend/authentication';
+import { User } from '@prisma/client';
 
 @Controller('attempts')
 export class B1AttemptsController {
   constructor(private readonly b1AttemptService: B1AttemptService) {}
 
   @Post()
-  async createOrUpdateB1Attempt(@Body() formAnswers: B1AnswersForm) {
-    console.log('formAnswers', formAnswers);
+  async createOrUpdateB1Attempt(
+    @DbUser() user: User,
+    @Body() formAnswers: B1AnswersForm
+  ) {
     try {
       return await this.b1AttemptService.createOrUpdateExamAttempt(
-        'saad.belkhou@gmail.com',
+        user.email,
         formAnswers.examId,
         formAnswers
       );
@@ -22,10 +26,13 @@ export class B1AttemptsController {
   }
 
   @Post('restart')
-  async startNewB1Attempt(@Body() formAnswers: B1AnswersForm) {
+  async startNewB1Attempt(
+    @DbUser() user: User,
+    @Body() formAnswers: B1AnswersForm
+  ) {
     try {
       return await this.b1AttemptService.createExamAttempt(
-        'saad.belkhou@gmail.com',
+        user.email,
         formAnswers.examId,
         formAnswers
       );
@@ -59,14 +66,13 @@ export class B1AttemptsController {
   }
   @Get('latest/:examId/:userEmail')
   async getLatestExamAttemptByExamIdAndUserEmail(
-    @Body() body: any,
-    @Param('examId') examId: string,
-    @Param('userEmail') userEmail: string
+    @DbUser() user: User,
+    @Param('examId') examId: string
   ) {
     try {
       return await this.b1AttemptService.getLatestExamAttemptByExamIdAndUserEmail(
-        'cm9o1pdir0000blisuz2tp44a',
-        'saad.belkhou@gmail.com'
+        examId,
+        user.email
       );
     } catch (e) {
       console.error('Error while getting Latest Exam Attempt', e);

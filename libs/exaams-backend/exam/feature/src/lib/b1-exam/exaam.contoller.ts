@@ -7,11 +7,15 @@ import {
   Post,
   UploadedFiles,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { B1ExaamService } from './b1-exaam.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { B1AttemptService } from '../b1-attempt/b1-attempt.service';
 import { ExamCatalogItem } from '@com.language.exams/exaams-backend/utils';
+import { DbUser } from '@com.language.exams/exaams-backend/authentication';
+import { User } from '@prisma/client';
+import { AccessGuard } from '../../../../../authentication/src';
 
 // This is a hack to make Multer available in the Express namespace
 
@@ -25,6 +29,7 @@ export class ExaamController {
   ) {}
 
   @Post()
+  @UseGuards(new AccessGuard('saad.belkhou@gmail.com'))
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'audioTrack', maxCount: 1 },
@@ -49,7 +54,6 @@ export class ExaamController {
 
   @Get()
   async getExaams() {
-    console.log('getExaams new');
     try {
       return await this.b1ExaamService.getAllExaams();
     } catch (e) {
@@ -59,10 +63,9 @@ export class ExaamController {
   }
 
   @Get('/catalog')
-  async getExaamCatalog(): Promise<ExamCatalogItem[]> {
-    console.log('getExaamCatalog');
+  async getExaamCatalog(@DbUser() user: User): Promise<ExamCatalogItem[]> {
     try {
-      return this.b1ExaamService.getExamsCatalog();
+      return this.b1ExaamService.getExamsCatalog(user.email);
     } catch (e) {
       console.error('Error while getting Exaam', e);
       return e;

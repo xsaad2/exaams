@@ -40,7 +40,7 @@ export class AuthenticationService {
   logout() {
     this.firebaseAuth.signOut().then(
       () => {
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['']);
       },
       (error) => {
         console.error('Error signing out: ', error);

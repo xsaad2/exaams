@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { initializeApp } from 'firebase-admin/app';
 import { environment } from '@com.language.exams/exaams/utils';
-import { UserService } from './user.service.service';
+import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { PrismaService } from '@com.language.exams/exaams-backend/utils';
 
