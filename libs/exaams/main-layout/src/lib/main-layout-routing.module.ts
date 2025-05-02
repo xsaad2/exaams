@@ -11,6 +11,13 @@ const routes: Routes = [
     canActivate: [],
   },
   {
+    path: 'auth',
+    loadChildren: () =>
+      import('@com.language.exams/exaams/auth/feature').then(
+        (c) => c.AuthModule
+      ),
+  },
+  {
     path: '',
     component: ExaamsMainLayoutComponent,
     children: [

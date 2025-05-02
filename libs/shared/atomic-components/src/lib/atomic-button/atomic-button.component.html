@@ -1,7 +1,11 @@
 <button
+  [disabled]="disabled()"
   [type]="type()"
-  class="w-full transition-colors {{ButtonColor}} shadow-xl border-black border-2 font-bold py-2 px-3 rounded text-center">
-  <div class="flex flex-row justify-center items-center">
-    <ng-content></ng-content>
+  [ngClass]="buttonColor()"
+  class="w-full transition-colors shadow-xl border-black border-2 font-bold py-2 px-3 rounded text-center">
+
+  <div class="flex flex-row items-center justify-center gap-2">
+    <ng-content ></ng-content>
   </div>
+
 </button>

@@ -189,8 +189,6 @@ export class B1AttemptService {
           Object.entries(taskAnswers).map(([itemNumber, chosenAnswer]) => {
             const itemNumberInt = itemNumber;
             const correctAnswer = exam[taskName]?.questions.find((qst) => {
-              console.log('qst.questionNumber', qst.questionNumber);
-              console.log('itemNumberInt new', itemNumberInt.slice(1));
               return String(qst.questionNumber) === itemNumberInt.slice(1);
             })?.correctAnswer;
 

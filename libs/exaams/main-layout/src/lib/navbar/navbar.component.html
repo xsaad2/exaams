@@ -30,7 +30,7 @@
             <div class="self-center">{{store.user()?.displayName}}</div>
           </div>
         } @else {
-          <atomic-button color="primary">Start Training Now</atomic-button>
+          <atomic-button (click)="onLogin()" color="primary">Start Training Now</atomic-button>
           <div class="flex px-3 self-center">
             <atomic-button color="transparent" (click)="onLogin()">Login</atomic-button >
           </div>
